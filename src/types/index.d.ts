@@ -3,6 +3,11 @@ declare type LoginData = {
   password: string;
 };
 
+declare type RefreshData = {
+  id: string;
+  refreshToken: string;
+};
+
 declare type RegisterData = {
   email: string;
   password: string;
@@ -15,8 +20,9 @@ declare type RegisterData = {
 declare type ActionResponse = {
   success: boolean;
   message: string;
-  errors?: Record<string, string[]>;
   inputs: LoginData;
+  errors?: Record<string, string[]>;
+  data?: unknown;
 };
 
 declare type AddressFormData = {
@@ -26,4 +32,28 @@ declare type AddressFormData = {
   state: string;
   zipCode: string;
   country: string;
+};
+
+declare type LoginResponse = {
+  accessToken: string;
+  refreshToken: string;
+  accessTokenExpiresAt: string;
+  refreshTokenExpiresAt: string;
+  user: {
+    id: string;
+    email: string;
+    phoneNumber: string;
+    firstName: string;
+    lastName: string;
+    isVerified: boolean;
+    technicianVerified: boolean;
+    roleId: string;
+    role: {
+      id: string;
+      name: string;
+      description: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+  };
 };

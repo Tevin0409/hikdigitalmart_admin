@@ -1,7 +1,9 @@
 "use client";
-import { useActionState, useState } from "react";
+import { useActionState, useState, useEffect } from "react";
+import { toast } from "sonner";
 
 import { login } from "@/app/(auth)/actions";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,27 +28,37 @@ export function LoginForm() {
     password: "",
   });
   const [state, dispatch, isPending] = useActionState(
-    async (
+    (
       prevState: ActionResponse,
       formData: FormData
     ): Promise<ActionResponse> => {
-      return await login(prevState, formData);
+      return login(prevState, formData);
     },
     initialState
   );
+  useEffect(() => {
+    if (state.success) {
+      toast.success(state.message);
+      // store user data in local storage
+      localStorage.setItem("user", JSON.stringify(state.data));
+      // redirect to home page
+    }
+  }, [state.success, state.message, state]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const result = await dispatch(formData); // Send formData as payload
+  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   const formData = new FormData(e.currentTarget);
+  //   const result = dispatch(formData); // Send formData as payload
 
-    if ((result as unknown as ActionResponse).success === false) {
-      setFormData((result as unknown as ActionResponse).inputs);
-    }
-  };
+  //   if ((result as unknown as ActionResponse).success === false) {
+  //     setFormData((result as unknown as ActionResponse).inputs);
+  //   }
+  //   console.log("Result:", result);
+  // };
 
   // const [state, dispatch, isPending] = useActionState(
   //   async (
@@ -59,12 +71,8 @@ export function LoginForm() {
   // );
 
   return (
-    // <form
-    //   action={dispatch}
-    //   className={cn("flex flex-col gap-6", className)}
-    //   {...props}
-    // >
-    <form onSubmit={handleSubmit}>
+    // <form onSubmit={handleSubmit}>
+    <form action={dispatch} className={cn("flex flex-col gap-6")}>
       <div className="flex flex-col items-start gap-2 text-left">
         <h1 className="text-2xl font-bold">Login to your account</h1>
         <p className="text-balance text-sm text-muted-foreground">
