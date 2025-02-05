@@ -11,7 +11,7 @@ export default function Dashboard() {
   const handleLogout = async () => {
     // await logoutAction();
     setAccessToken(null);
-    router.push("/login");
+    router.push("/");
   };
 
   return (

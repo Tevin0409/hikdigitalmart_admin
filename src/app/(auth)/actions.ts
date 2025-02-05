@@ -78,6 +78,7 @@ export async function login(
       technicianVerified: loginResponse.data.user.technicianVerified,
       roleId: loginResponse.data.user.roleId,
       role: loginResponse.data.user.role,
+      accessToken,
     };
     cookieStore.set("id", user.id as string, {
       httpOnly: true,

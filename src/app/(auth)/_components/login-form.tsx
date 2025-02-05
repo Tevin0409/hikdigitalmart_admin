@@ -1,10 +1,12 @@
 "use client";
 import { useActionState, useState, useEffect } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 import { login } from "@/app/(auth)/actions";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useAuthStore } from "@/store/authStore";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -23,6 +25,7 @@ const initialState: ActionResponse = {
   inputs: { email: "", password: "" },
 };
 export function LoginForm() {
+  const router = useRouter();
   const [formData, setFormData] = useState<LoginData>({
     email: "",
     password: "",
@@ -36,12 +39,15 @@ export function LoginForm() {
     },
     initialState
   );
+  const { setAccessToken } = useAuthStore();
   useEffect(() => {
     if (state.success) {
       toast.success(state.message);
       // store user data in local storage
       localStorage.setItem("user", JSON.stringify(state.data));
+      setAccessToken((state.data as LoginResponse).accessToken);
       // redirect to home page
+      router.push("/dashboard");
     }
   }, [state.success, state.message, state]);
 
