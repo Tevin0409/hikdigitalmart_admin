@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuthStore } from "@/store/authStore";
-import { logoutAction } from "@/actions/auth";
+
 import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
@@ -9,7 +9,7 @@ export default function Dashboard() {
   const router = useRouter();
 
   const handleLogout = async () => {
-    await logoutAction();
+    // await logoutAction();
     setAccessToken(null);
     router.push("/login");
   };
