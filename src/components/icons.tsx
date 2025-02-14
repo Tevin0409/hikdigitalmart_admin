@@ -35,7 +35,7 @@ import {
 
 export type Icon = LucideIcon;
 
-export const Icons = {
+export const Icons: Record<string, React.ComponentType<LucideProps>> = {
   dashboard: LayoutDashboardIcon,
   logo: Command,
   login: LogIn,
