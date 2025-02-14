@@ -48,7 +48,6 @@ export async function middleware(req: NextRequest) {
           expires: new Date(accessTokenExpiresAt),
         });
         response.cookies.set("refresh_token", refreshToken as string, {
-          httpOnly: true,
           secure: true,
           sameSite: "strict",
           path: "/",
