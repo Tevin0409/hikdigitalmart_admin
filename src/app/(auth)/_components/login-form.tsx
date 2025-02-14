@@ -12,12 +12,6 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle2 } from "lucide-react";
 
-// const initialState: ActionResponse = {
-//   success: false,
-//   message: "",
-//   errors: undefined,
-//   inputs: undefined,
-// };
 const initialState: ActionResponse = {
   success: false,
   message: "",

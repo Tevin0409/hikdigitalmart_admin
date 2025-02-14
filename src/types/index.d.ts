@@ -57,3 +57,37 @@ declare type LoginResponse = {
     };
   };
 };
+
+declare type SessionPayload = {
+  userId: string;
+  roleId: string;
+  role: string;
+  expiresAt: Date;
+};
+
+declare type NavSideItem = {
+  title: string;
+  url: string;
+  icon: string;
+  shortcut: string[];
+};
+
+declare type NavItem = {
+  title: string;
+  url: string;
+  icon: string;
+  isActive: boolean;
+  items: NavSideItem[];
+  shortcut?: string[];
+};
+
+declare type ForgotPasswordData = {
+  email: string;
+};
+
+declare type ResetPasswordData = {
+  email: string;
+  newPassword: string;
+  confirmNewPassword: string;
+  otp: string;
+};

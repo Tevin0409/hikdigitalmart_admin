@@ -1,8 +1,9 @@
 "use server";
-import { LoginFormSchema } from "@/app/_lib/definitions";
-import { loginMutation, refreshAccessTokenMutation } from "@/lib/api";
 import { AxiosError } from "axios";
 import { cookies } from "next/headers";
+import { LoginFormSchema } from "@/app/_lib/definitions";
+import { loginMutation, refreshAccessTokenMutation } from "@/lib/api";
+import { createSession } from "@/lib/session";
 
 // export async function createUser(prevState: unknown, formData: FormData) {
 //   const validationResult = SignupFormSchema.safeParse({
@@ -88,6 +89,8 @@ export async function login(
       expires: new Date(accessTokenExpiresAt),
     });
 
+    await createSession(user.id, user.roleId, user.role.name);
+
     return {
       success: true,
       message: "Login successful!",
@@ -109,16 +112,44 @@ export async function login(
   }
 }
 
-export async function refreshAccessToken() {
-  const cookieStore = await cookies();
-  const refreshToken = cookieStore.get("refresh_token");
+export async function refreshAccessToken(): Promise<ActionResponse> {
+  try {
+    const cookieStore = await cookies();
+    const refreshToken = cookieStore.get("refresh_token");
 
-  const user_id = cookieStore.get("id");
-  if (!refreshToken || !user_id) {
-    return;
+    const user_id = cookieStore.get("id");
+    if (!refreshToken || !user_id) {
+      return {
+        success: false,
+        message: "Unable to refresh access token",
+        inputs: {
+          email: "",
+          password: "",
+        },
+      };
+    }
+    const response = await refreshAccessTokenMutation({
+      id: user_id.value,
+      refreshToken: refreshToken.value,
+    });
+    return {
+      success: true,
+      message: "Access token refreshed successfully",
+      inputs: {
+        email: "",
+        password: "",
+      },
+      data: response.data,
+    };
+  } catch (error) {
+    console.log("Error refreshing access token:", error);
+    return {
+      success: false,
+      message: "Unable to refresh access token",
+      inputs: {
+        email: "",
+        password: "",
+      },
+    };
   }
-  await refreshAccessTokenMutation({
-    id: user_id.value,
-    refreshToken: refreshToken.value,
-  });
 }
