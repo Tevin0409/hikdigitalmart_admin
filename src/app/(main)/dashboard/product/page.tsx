@@ -53,6 +53,47 @@ const Products = async (props: pageProps) => {
               <DialogTrigger asChild>
                 <Button variant="default" className=" bg-green-700 ">
                   <CloudUploadIcon />
+                  Add New
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[725px]">
+                <DialogHeader>
+                  <DialogTitle>Create Product</DialogTitle>
+                  <DialogDescription>
+                    Create a new product with the following details.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="name" className="text-right">
+                      Name
+                    </Label>
+                    <Input
+                      id="name"
+                      value="Pedro Duarte"
+                      className="col-span-3"
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="username" className="text-right">
+                      Username
+                    </Label>
+                    <Input
+                      id="username"
+                      value="@peduarte"
+                      className="col-span-3"
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button type="submit">Save changes</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="default" className=" bg-green-700 ">
+                  <CloudUploadIcon />
                   Bulk Upload
                 </Button>
               </DialogTrigger>

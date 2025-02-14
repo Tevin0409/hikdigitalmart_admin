@@ -5,26 +5,6 @@ import { LoginFormSchema } from "@/app/_lib/definitions";
 import { loginMutation, refreshAccessTokenMutation } from "@/lib/api";
 import { createSession } from "@/lib/session";
 
-// export async function createUser(prevState: unknown, formData: FormData) {
-//   const validationResult = SignupFormSchema.safeParse({
-//     email: formData.get("email"),
-//     password: formData.get("password"),
-//     phoneNumber: formData.get("phoneNumber"),
-//     firstName: formData.get("firstName"),
-//     lastName: formData.get("lastName"),
-//     roleId: formData.get("roleId"),
-//   });
-
-//   // Validate fields using the zod schema
-//   if (!validationResult.success) {
-//     return {
-//       errors: validationResult.error.flatten().fieldErrors,
-//     };
-//   }
-//   // Create user
-//   // create session
-// }
-
 export async function login(
   state: ActionResponse,
   formData: FormData

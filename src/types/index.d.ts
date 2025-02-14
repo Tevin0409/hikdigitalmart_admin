@@ -20,7 +20,7 @@ declare type RegisterData = {
 declare type ActionResponse = {
   success: boolean;
   message: string;
-  inputs: LoginData;
+  inputs: LoginData | ProductData;
   errors?: Record<string, string[]>;
   data?: unknown;
 };
@@ -111,6 +111,6 @@ declare type Model = {
 declare type ProductData = {
   name: string;
   subCategoryId: string;
-  defaultPrice: number;
-  models: Model[];
+  defaultPrice: string;
+  models: Model[] | string;
 };

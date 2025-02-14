@@ -1,105 +1,101 @@
 "use server";
 import { AxiosError } from "axios";
-import { cookies } from "next/headers";
-import { LoginFormSchema } from "@/app/_lib/definitions";
-import { loginMutation, getAllProductsMutation } from "@/lib/api";
-import { createSession } from "@/lib/session";
+import z from "zod";
+import {
+  ProductFormSchema,
+  CategoryFormSchema,
+  SubcategoryFormSchema,
+} from "@/app/_lib/definitions";
+import {
+  createProductMutation,
+  createCategoryMutation,
+  createSubcategoryMutation,
+} from "@/lib/api";
 
-// export async function createUser(prevState: unknown, formData: FormData) {
-//   const validationResult = SignupFormSchema.safeParse({
-//     email: formData.get("email"),
-//     password: formData.get("password"),
-//     phoneNumber: formData.get("phoneNumber"),
-//     firstName: formData.get("firstName"),
-//     lastName: formData.get("lastName"),
-//     roleId: formData.get("roleId"),
-//   });
+async function validateAndPost<T>(
+  schema: z.ZodSchema<T>,
+  rawData: unknown,
+  mutation: (data: T) => Promise<unknown>
+) {
+  const validatedData = schema.safeParse(rawData);
+  if (!validatedData.success) {
+    return {
+      success: false,
+      message: "Please fix the errors in the form",
+      errors: validatedData.error.flatten().fieldErrors,
+      inputs: rawData,
+    };
+  }
+  return await mutation(validatedData.data);
+}
 
-//   // Validate fields using the zod schema
-//   if (!validationResult.success) {
-//     return {
-//       errors: validationResult.error.flatten().fieldErrors,
-//     };
-//   }
-//   // Create user
-//   // create session
-// }
-
-export async function login(
-  state: ActionResponse,
-  formData: FormData
-): Promise<ActionResponse> {
+export async function createProduct(state: ActionResponse, formData: FormData) {
   try {
-    const rawData: LoginData = {
-      email: formData.get("email") as string,
-      password: formData.get("password") as string,
+    const rawData = {
+      name: formData.get("name"),
+      subCategoryId: formData.get("subCategoryId"),
+      defaultPrice: parseFloat(formData.get("defaultPrice") as string),
+      models: JSON.parse(formData.get("models") as string),
     };
-
-    const validatedData = LoginFormSchema.safeParse(rawData);
-
-    if (!validatedData.success) {
-      return {
-        success: false,
-        message: "Please fix the errors in the form",
-        errors: validatedData.error.flatten().fieldErrors,
-        inputs: rawData,
-      };
-    }
-
-    const loginResponse = await loginMutation(validatedData.data);
-    const {
-      refreshToken,
-      accessToken,
-      accessTokenExpiresAt,
-      refreshTokenExpiresAt,
-    } = loginResponse.data;
-
-    const cookieStore = await cookies();
-    cookieStore.set("refresh_token", refreshToken as string, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      path: "/",
-      expires: new Date(refreshTokenExpiresAt),
-    });
-    cookieStore.set("access_token", accessToken as string, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      path: "/",
-      expires: new Date(accessTokenExpiresAt),
-    });
-    const user = {
-      id: loginResponse.data.user.id,
-      email: loginResponse.data.user.email,
-      phoneNumber: loginResponse.data.user.phoneNumber,
-      firstName: loginResponse.data.user.firstName,
-      lastName: loginResponse.data.user.lastName,
-      isVerified: loginResponse.data.user.isVerified,
-      technicianVerified: loginResponse.data.user.technicianVerified,
-      roleId: loginResponse.data.user.roleId,
-      role: loginResponse.data.user.role,
-      accessToken,
-    };
-    cookieStore.set("id", user.id as string, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      path: "/",
-      expires: new Date(accessTokenExpiresAt),
-    });
-
-    await createSession(user.id, user.roleId, user.role.name);
+    return await validateAndPost(
+      ProductFormSchema,
+      rawData,
+      createProductMutation
+    );
+  } catch (error) {
+    const errorMessage =
+      (error as AxiosError<{ error: { message: string } }>)?.response?.data
+        ?.error?.message || "An unexpected error occurred";
 
     return {
-      success: true,
-      message: "Login successful!",
-      inputs: rawData,
-      data: user,
+      success: false,
+      message: errorMessage,
+      inputs: state.inputs, // Retain previous inputs
     };
-  } catch (error) {
-    console.log("Error submitting login:", error);
+  }
+}
 
+export async function createCategory(
+  state: ActionResponse,
+  formData: FormData
+) {
+  try {
+    const rawData = {
+      name: formData.get("name"),
+    };
+    return await validateAndPost(
+      CategoryFormSchema,
+      rawData,
+      createCategoryMutation
+    );
+  } catch (error) {
+    const errorMessage =
+      (error as AxiosError<{ error: { message: string } }>)?.response?.data
+        ?.error?.message || "An unexpected error occurred";
+
+    return {
+      success: false,
+      message: errorMessage,
+      inputs: state.inputs, // Retain previous inputs
+    };
+  }
+}
+
+export async function createSubcategory(
+  state: ActionResponse,
+  formData: FormData
+) {
+  try {
+    const rawData = {
+      name: formData.get("name"),
+      categoryId: formData.get("categoryId"),
+    };
+    return await validateAndPost(
+      SubcategoryFormSchema,
+      rawData,
+      createSubcategoryMutation
+    );
+  } catch (error) {
     const errorMessage =
       (error as AxiosError<{ error: { message: string } }>)?.response?.data
         ?.error?.message || "An unexpected error occurred";

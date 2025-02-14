@@ -38,3 +38,27 @@ export const addressSchema = z.object({
   zipCode: z.string().min(5, "ZIP code must be at least 5 characters"),
   country: z.string().min(1, "Country is required"),
 });
+
+export const ProductFormSchema = z.object({
+  name: z.string().min(1),
+  subCategoryId: z.string().uuid(),
+  defaultPrice: z.number().positive(),
+  models: z.array(
+    z.object({
+      name: z.string().min(1),
+      description: z.string().min(1),
+      price: z.number().positive(),
+      features: z.array(z.object({ description: z.string().min(1) })),
+      inventory: z.object({ quantity: z.number().int().nonnegative() }),
+    })
+  ),
+});
+
+export const CategoryFormSchema = z.object({
+  name: z.string().min(1),
+});
+
+export const SubcategoryFormSchema = z.object({
+  name: z.string().min(1),
+  categoryId: z.string().uuid(),
+});
