@@ -23,7 +23,7 @@ export async function middleware(req: NextRequest) {
     new Date((session as SessionPayload).expiresAt) < new Date();
 
   if (isProtectedRoute && (!session?.userId || !accessToken)) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   // Handle session refresh
