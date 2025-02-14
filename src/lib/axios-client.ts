@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const options = {
-  baseURL: "https://hickdigitalmart-backend.onrender.com/api/",
+  baseURL: "http://164.92.217.115:4500/api/",
   withCredentials: true,
   timeout: 10000,
 };
