@@ -18,73 +18,73 @@ export const forgotPasswordMutation = (data: ForgotPasswordData) => {
 
 // USEERS
 
-export const getAllUsers = () => {
+export const getAllUsersMutation = () => {
   return API.get("/user/get-all-users");
 };
 
-export const getUserById = (id: string) => {
+export const getUserByIdMutation = (id: string) => {
   return API.get(`/user/get-user/${id}`);
 };
 
-export const getUserByEmail = (email: string) => {
+export const getUserByEmailMutation = (email: string) => {
   return API.get(`/user/get-user-by-email/${email}`);
 };
 
-export const updateUser = (id: string, data: object) => {
+export const updateUserMutation = (id: string, data: object) => {
   return API.put(`/user/update-user/${id}`, data);
 };
 
 //PRODUCTS
 
-export const getAllProducts = () => {
+export const getAllProductsMutation = () => {
   return API.get("/product");
 };
 
-export const createCategory = (data: object) => {
+export const createCategoryMutation = (data: object) => {
   return API.post("/product/categories/create", data);
 };
 
-export const createSubcategory = (data: object) => {
+export const createSubcategoryMutation = (data: object) => {
   return API.post("/product/subcategories/create", data);
 };
 
-export const createProduct = (data: object) => {
+export const createProductMutation = (data: object) => {
   return API.post("/product/create-product", data);
 };
 
-export const bulkUploadProducts = (data: object) => {
+export const bulkUploadProductsMutation = (data: object) => {
   return API.post("/product/product/upload-xslx", data);
 };
 
-export const getProductById = (id: string) => {
+export const getProductByIdMutation = (id: string) => {
   return API.get(`/product/by-id/${id}`);
 };
 
-export const getAllSubcategories = () => {
+export const getAllSubcategoriesMutation = () => {
   return API.get(`/product/subcategories`);
 };
 
-export const getAllOrders = () => {
+export const getAllOrdersMutation = () => {
   return API.get(`/product/orders`);
 };
 
-export const bulkUploadProductImages = (data: object) => {
+export const bulkUploadProductImagesMutation = (data: object) => {
   return API.post("/product/product/add-images", data);
 };
 
-export const setPrimaryImage = (data: object) => {
+export const setPrimaryImageMutation = (data: object) => {
   return API.post("/product/set-primary-image", data);
 };
 
-export const deleteImage = (id: string) => {
+export const deleteImageMutation = (id: string) => {
   return API.post(`/product/remove-image/${id}`);
 };
 
 // INVENTORY
-export const addModelInventory = (data: object) => {
+export const addModelInventoryMutation = (data: object) => {
   return API.post("/product/add-stock", data);
 };
 
-export const updateModelInventory = (data: object) => {
+export const updateModelInventoryMutation = (data: object) => {
   return API.post("/product/update-stock", data);
 };

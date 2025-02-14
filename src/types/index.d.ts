@@ -91,3 +91,26 @@ declare type ResetPasswordData = {
   confirmNewPassword: string;
   otp: string;
 };
+
+declare type Feature = {
+  description: string;
+};
+
+declare type Inventory = {
+  quantity: number;
+};
+
+declare type Model = {
+  name: string;
+  description: string;
+  price: number;
+  features: Feature[];
+  inventory: Inventory;
+};
+
+declare type ProductData = {
+  name: string;
+  subCategoryId: string;
+  defaultPrice: number;
+  models: Model[];
+};
