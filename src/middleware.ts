@@ -2,42 +2,35 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { updateSession, decrypt } from "@/lib/session";
 import { refreshAccessToken } from "./app/(auth)/actions";
-import { cookies } from "next/headers";
 
 const protectedRoutes = ["/dashboard"];
-// const publicRoutes = ["/login", "/signup", "/"];
 
 export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
   const isProtectedRoute = protectedRoutes.includes(path);
 
-  // const isPublicRoute = publicRoutes.includes(path);
-
-  // Get cookies
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get("session")?.value;
-  const refreshToken = cookieStore.get("refresh_token")?.value;
-  const accessToken = cookieStore.get("access_token")?.value;
+  // Get cookies from request
+  const sessionCookie = req.cookies.get("session")?.value;
+  const refreshToken = req.cookies.get("refresh_token")?.value;
+  const accessToken = req.cookies.get("access_token")?.value;
 
   // Decrypt session
   const session = await decrypt(sessionCookie);
-  console.log("sessionn", session);
+  console.log("Session:", session);
 
   const isSessionExpired =
-    (session as SessionPayload).expiresAt &&
+    (session as SessionPayload)?.expiresAt &&
     new Date((session as SessionPayload).expiresAt) < new Date();
 
   if (isProtectedRoute && (!session?.userId || !accessToken)) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  // Refresh token if session is expired and refreshToken exists
+  // Handle session refresh
   if (isSessionExpired && refreshToken) {
-    console.log("isSessionExpired", isSessionExpired);
-    console.log("refreshToken", refreshToken);
+    console.log("Session expired, refreshing token...");
     try {
       const result = await refreshAccessToken();
-
       if (result.data as LoginResponse) {
         const {
           accessToken,
@@ -45,14 +38,16 @@ export async function middleware(req: NextRequest) {
           refreshTokenExpiresAt,
           accessTokenExpiresAt,
         } = result.data as LoginResponse;
-        // Store new access token in cookies
-        cookieStore.set("access_token", accessToken, {
+
+        // Use NextResponse to modify cookies
+        const response = NextResponse.next();
+        response.cookies.set("access_token", accessToken, {
           secure: true,
           sameSite: "strict",
           path: "/",
           expires: new Date(accessTokenExpiresAt),
         });
-        cookieStore.set("refresh_token", refreshToken as string, {
+        response.cookies.set("refresh_token", refreshToken as string, {
           httpOnly: true,
           secure: true,
           sameSite: "strict",
@@ -60,8 +55,9 @@ export async function middleware(req: NextRequest) {
           expires: new Date(refreshTokenExpiresAt),
         });
 
-        // Update session with new expiration
+        // Update session
         await updateSession();
+        return response;
       }
     } catch (error) {
       console.error("Failed to refresh token:", error);
@@ -72,6 +68,8 @@ export async function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
+// Ensure compatibility with Vercel Edge Functions
 export const config = {
-  matcher: ["/dashboard/:path*"], // Protect dashboard routes
+  matcher: ["/dashboard/:path*"],
+  runtime: "experimental-edge",
 };
