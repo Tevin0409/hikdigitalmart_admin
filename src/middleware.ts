@@ -70,5 +70,4 @@ export async function middleware(req: NextRequest) {
 // Ensure compatibility with Vercel Edge Functions
 export const config = {
   matcher: ["/dashboard/:path*"],
-  runtime: "experimental-edge",
 };

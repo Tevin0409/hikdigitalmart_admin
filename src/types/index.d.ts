@@ -20,11 +20,15 @@ declare type RegisterData = {
 declare type ActionResponse = {
   success: boolean;
   message: string;
-  inputs: LoginData | ProductData;
+  inputs: Record<string, string | File> | FormData;
   errors?: Record<string, string[]>;
   data?: unknown;
 };
-
+declare type FetchResponse = {
+  success: boolean;
+  message: string;
+  data?: unknown;
+};
 declare type AddressFormData = {
   streetAddress: string;
   apartment?: string;
@@ -100,6 +104,22 @@ declare type Inventory = {
   quantity: number;
 };
 
+declare type Category = {
+  name: string;
+  createdAt?: string;
+  updatedAt?: string;
+  id?: string;
+};
+
+declare type Subcategory = {
+  name: string;
+
+  categoryId: string;
+  createdAt?: string;
+  updatedAt?: string;
+  id?: string;
+};
+
 declare type Model = {
   name: string;
   description: string;
@@ -113,4 +133,9 @@ declare type ProductData = {
   subCategoryId: string;
   defaultPrice: string;
   models: Model[] | string;
+};
+
+declare type ProductQueryParams = {
+  page: number;
+  limit: number;
 };
