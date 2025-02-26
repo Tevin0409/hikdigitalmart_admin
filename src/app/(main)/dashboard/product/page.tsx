@@ -25,6 +25,7 @@ import { Upload, Download } from "lucide-react";
 
 import UploadProductsDialog from "../../_components/bulkupload";
 import { useProducts } from "@/hooks/use-products";
+import ProductsTable from "../../_components/tables/productsDataTable";
 
 type pageProps = {
   searchParams: Promise<SearchParams>;
@@ -86,6 +87,8 @@ const Products = (props: pageProps) => {
           </div>
         </div>
         <Separator />
+
+        <ProductsTable />
       </div>
     </PageContainer>
   );

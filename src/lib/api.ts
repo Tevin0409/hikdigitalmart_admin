@@ -37,11 +37,11 @@ export const updateUserMutation = async (id: string, data: object) =>
 
 // PRODUCTS
 export const getAllProductsQuery = async (params: ProductQueryParams) =>
-  await API.get("/product", { params });
+  await API.get("/admin/product", { params });
 export const createCategoryMutation = async (data: Category) =>
   await API.post("/admin/product/categories/create", data);
 export const createSubcategoryMutation = async (data: object) =>
-  await API.post("/product/subcategories/create", data);
+  await API.post("/admin/product/subcategories/create", data);
 export const createProductMutation = async (data: object) =>
   await API.post("/product/create-product", data);
 export const bulkUploadProductsMutation = async (data: object) => {

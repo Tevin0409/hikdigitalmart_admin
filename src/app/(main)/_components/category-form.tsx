@@ -64,7 +64,7 @@ export function CategoryForm() {
             onChange={handleChange}
             required
           />
-          {state.errors?.email && (
+          {state.errors?.name && (
             <p className="text-sm text-red-500">{state.errors.category[0]}</p>
           )}
         </div>

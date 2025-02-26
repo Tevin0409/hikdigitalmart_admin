@@ -178,6 +178,50 @@ export async function revalidateProducts() {
   revalidatePath("/product"); // Adjust path as needed
 }
 
+export async function createSubCategory(
+  state: ActionResponse,
+  formData: FormData
+): Promise<ActionResponse> {
+  try {
+    const rawData: Subcategory = {
+      name: formData.get("name") as string,
+      categoryId: formData.get("categoryId") as string,
+    };
+
+    const validatedData = SubcategoryFormSchema.safeParse(rawData);
+
+    if (!validatedData.success) {
+      return {
+        success: false,
+        message: "Please fix the errors in the form",
+        inputs: rawData,
+        errors: validatedData.error.flatten().fieldErrors,
+      };
+    }
+
+    const subCategoryResponse = await createSubcategoryMutation(
+      validatedData.data
+    );
+    console.log(subCategoryResponse);
+
+    return {
+      success: true,
+      message: "Subcategory created successfully",
+      inputs: rawData,
+    };
+  } catch (error) {
+    const errorMessage =
+      (error as AxiosError<{ error: { message: string } }>)?.response?.data
+        ?.error?.message || "An unexpected error occurred";
+
+    return {
+      success: false,
+      message: errorMessage,
+      inputs: state.inputs, // Retain previous inputs
+    };
+  }
+}
+
 // export async function createSubcategory(
 //   state: ActionResponse,
 //   formData: FormData
