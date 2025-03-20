@@ -1,0 +1,66 @@
+name: Deploy to DigitalOcean
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Next.js app
+        run: pnpm build
+
+      - name: Deploy to DigitalOcean
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USER }}
+          key: ${{ secrets.DO_SSH_PRIVATE_KEY }}
+          script: |
+            # Set project directory
+            PROJECT_DIR="$HOME/admin"
+
+            # Ensure SSH agent is running
+            eval "$(ssh-agent -s)"
+            mkdir -p ~/.ssh
+            chmod 700 ~/.ssh
+
+            # Clone repository if it doesn’t exist, otherwise pull updates
+            if [ ! -d "$PROJECT_DIR/.git" ]; then
+              echo "Repository not found. Cloning..."
+              git clone git@github.com:Tevin0409/hikdigitalmart_admin.git $PROJECT_DIR
+            else
+              echo "Repository exists. Pulling latest changes..."
+              cd $PROJECT_DIR
+              git pull origin main
+            fi
+
+            # Navigate to project directory
+            cd $PROJECT_DIR
+
+            # Install dependencies using pnpm
+            pnpm install --frozen-lockfile
+
+            # Build the Next.js app
+            pnpm build
+
+            # Restart the application using PM2 on port 5000
+            pm2 restart hikdigitalmart_admin || pm2 start pnpm --name "hikdigitalmart_admin" -- start -- -p 5000
