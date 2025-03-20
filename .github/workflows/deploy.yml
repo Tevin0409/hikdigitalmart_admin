@@ -19,8 +19,11 @@ jobs:
           node-version: 18
           cache: 'pnpm'
 
+      - name: Enable Corepack (for pnpm)
+        run: corepack enable
+
       - name: Install pnpm
-        run: npm install -g pnpm
+        run: corepack prepare pnpm@latest --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -57,6 +60,7 @@ jobs:
             cd $PROJECT_DIR
 
             # Install dependencies using pnpm
+            corepack enable
             pnpm install --frozen-lockfile
 
             # Build the Next.js app
