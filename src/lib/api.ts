@@ -47,6 +47,8 @@ export const createProductMutation = async (data: object) =>
 export const bulkUploadProductsMutation = async (data: object) => {
   await API.post("/admin/product/upload-xslx", data);
 };
+export const uploadProductImagesMutation = async (data: object) =>
+  await API.post("/admin/product/add-images", data);
 export const getProductByIdQuery = async (id: string) =>
   await API.get(`/product/by-id/${id}`);
 export const getAllCategoriesQuery = async () =>

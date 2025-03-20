@@ -35,31 +35,34 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, ChevronUp, ChevronDown } from "lucide-react";
 import { useProducts } from "@/hooks/use-products";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { Label } from "@radix-ui/react-label";
-const flattenProductsData = (data) => {
-  const flattenedData = [];
 
-  data.results.forEach((product) => {
+import ProductEditSheet from "./product-sidebar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import UploadImagesDialog from "../imageUpload";
+const flattenProductsData = (data: FetchProductsResponse) => {
+  const flattenedData: FlattenProductsData[] = [];
+
+  if (!data.results) return flattenedData;
+
+  data.results.forEach((product: ProductData) => {
     product.models.forEach((model) => {
       flattenedData.push({
-        productId: product.id,
+        productId: product.id!,
         productName: product.name,
-        category: product.subCategory.category.name,
+        category: product.subCategory.category!.name,
         subCategory: product.subCategory.name,
-        modelId: model.id,
+        modelId: model.id!,
         modelName: model.name,
         description: model.description,
         price: model.price,
         inventory: model.inventory.quantity,
+        features: model.features,
       });
     });
   });
@@ -76,16 +79,25 @@ const ProductsTable = () => {
     direction: "asc",
   });
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const handleEditClick = (product) => {
+  const [selectedProduct, setSelectedProduct] =
+    useState<FlattenProductsData | null>(null);
+
+  const handleEditClick = (product: FlattenProductsData) => {
+    // todo: fetch product details from the server then set the selected product
     setSelectedProduct(product);
     setIsSheetOpen(true);
   };
 
-  const handleRowClick = (product) => {
+  const handleRowClick = (product: FlattenProductsData) => {
     setSelectedProduct(product);
     setIsSheetOpen(true);
+  };
+
+  const handleAddImagesClick = (product: FlattenProductsData) => {
+    setSelectedProduct(product);
+    setIsDialogOpen(true);
   };
 
   // Fetch products data
@@ -100,7 +112,9 @@ const ProductsTable = () => {
       </div>
     );
 
-  const productsData = flattenProductsData(products.data);
+  const productsData = flattenProductsData(
+    products!.data as FetchProductsResponse
+  );
 
   const filteredData = productsData.filter((item) => {
     return (
@@ -123,7 +137,7 @@ const ProductsTable = () => {
   const startIndex = (currentPage - 1) * rowsPerPage;
   const paginatedData = sortedData.slice(startIndex, startIndex + rowsPerPage);
 
-  const requestSort = (key) => {
+  const requestSort = (key: string) => {
     let direction = "asc";
     if (sortConfig.key === key && sortConfig.direction === "asc") {
       direction = "desc";
@@ -131,7 +145,7 @@ const ProductsTable = () => {
     setSortConfig({ key, direction });
   };
 
-  const getSortIcon = (columnName) => {
+  const getSortIcon = (columnName: string) => {
     if (sortConfig.key !== columnName) return null;
 
     return sortConfig.direction === "asc" ? (
@@ -219,7 +233,7 @@ const ProductsTable = () => {
                     KSH{(item.price / 100).toFixed(2)}
                   </TableCell>
                   <TableCell className="text-right">{item.inventory}</TableCell>
-                  <TableCell>
+                  <TableCell onClick={(e) => e.stopPropagation()}>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
@@ -236,7 +250,11 @@ const ProductsTable = () => {
                         >
                           Copy model ID
                         </DropdownMenuItem>
-                        <DropdownMenuItem>View details</DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleAddImagesClick(item)}
+                        >
+                          Add model Images
+                        </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleEditClick(item)}>
                           Edit
                         </DropdownMenuItem>
@@ -340,67 +358,28 @@ const ProductsTable = () => {
           </PaginationContent>
         </Pagination>
       </div>
-      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-        <SheetContent className="sm:max-w-md">
-          <SheetHeader>
-            <SheetTitle>Edit Product</SheetTitle>
-            <SheetDescription>
-              Make changes to the product here. Click save when you're done.
-            </SheetDescription>
-          </SheetHeader>
-          {selectedProduct && (
-            <div className="py-4 space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="modelName">Model Name</Label>
-                <Input
-                  id="modelName"
-                  defaultValue={selectedProduct.modelName}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="productName">Product Name</Label>
-                <Input
-                  id="productName"
-                  defaultValue={selectedProduct.productName}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="category">Category</Label>
-                <Input id="category" defaultValue={selectedProduct.category} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="subCategory">Sub Category</Label>
-                <Input
-                  id="subCategory"
-                  defaultValue={selectedProduct.subCategory}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="price">Price (KSH)</Label>
-                <Input
-                  id="price"
-                  type="number"
-                  defaultValue={(selectedProduct.price / 100).toFixed(2)}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="inventory">Stock</Label>
-                <Input
-                  id="inventory"
-                  type="number"
-                  defaultValue={selectedProduct.inventory}
-                />
-              </div>
-            </div>
-          )}
-          <SheetFooter className="pt-4">
-            <SheetClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </SheetClose>
-            <Button>Save changes</Button>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
+
+      <ProductEditSheet
+        isSheetOpen={isSheetOpen}
+        setIsSheetOpen={setIsSheetOpen}
+        selectedProduct={selectedProduct!}
+      />
+      <UploadImagesDialog
+        isOpened={isDialogOpen && selectedProduct !== null}
+        modelID={selectedProduct?.modelId || ""}
+        onClose={() => setIsDialogOpen(false)}
+      />
+      {/* <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>ShadCN Dialog</DialogTitle>
+            <DialogDescription>
+              This dialog opens based on the `isOpened` state.
+            </DialogDescription>
+          </DialogHeader>
+          <Button onClick={() => setIsDialogOpen(false)}>Close</Button>
+        </DialogContent>
+      </Dialog> */}
     </div>
   );
 };

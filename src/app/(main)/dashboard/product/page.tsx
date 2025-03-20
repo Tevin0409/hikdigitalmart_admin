@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense } from "react";
+import React, { Suspense, useState } from "react";
 import PageContainer from "@/components/layout/page-container";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
@@ -26,12 +26,14 @@ import { Upload, Download } from "lucide-react";
 import UploadProductsDialog from "../../_components/bulkupload";
 import { useProducts } from "@/hooks/use-products";
 import ProductsTable from "../../_components/tables/productsDataTable";
+import VignettePurchaseDialog from "../../_components/newProduct";
 
 type pageProps = {
   searchParams: Promise<SearchParams>;
 };
 const Products = (props: pageProps) => {
   const { data: products, isLoading, error } = useProducts();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   if (isLoading) return <p>Loading products...</p>;
   if (error) return <p>Error fetching products</p>;
@@ -42,47 +44,14 @@ const Products = (props: pageProps) => {
           <Heading title="Products" description="Manage products " />
 
           <div className="flex items-center space-x-4">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="default" className=" bg-green-700 ">
-                  <CloudUploadIcon />
-                  Add New
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[725px]">
-                <DialogHeader>
-                  <DialogTitle>Create Product</DialogTitle>
-                  <DialogDescription>
-                    Create a new product with the following details.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  {/* <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="name" className="text-right">
-                      Name
-                    </Label>
-                    <Input
-                      id="name"
-                      value="Pedro Duarte"
-                      className="col-span-3"
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="username" className="text-right">
-                      Username
-                    </Label>
-                    <Input
-                      id="username"
-                      value="@peduarte"
-                      className="col-span-3"
-                    />
-                  </div> */}
-                </div>
-                <DialogFooter>
-                  <Button type="submit">Save changes</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+            <Button variant="outline" onClick={() => setIsDialogOpen(true)}>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Product
+            </Button>
+            <VignettePurchaseDialog
+              open={isDialogOpen}
+              onClose={() => setIsDialogOpen(false)}
+            />
             <UploadProductsDialog />
           </div>
         </div>

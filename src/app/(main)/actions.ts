@@ -14,6 +14,7 @@ import {
   getAllCategoriesQuery,
   getAllSubcategoriesQuery,
   getAllProductsQuery,
+  uploadProductImagesMutation,
 } from "@/lib/api";
 import { revalidatePath } from "next/cache";
 
@@ -94,6 +95,35 @@ export async function bulkUploadProducts(
     return {
       success: true,
       message: "Products uploaded successfully",
+      inputs: {
+        file: formData.get("file")!,
+      }, // Retain previous inputs
+    };
+  } catch (error) {
+    const errorMessage =
+      (error as AxiosError<{ error: { message: string } }>)?.response?.data
+        ?.error?.message || "An unexpected error occurred";
+
+    return {
+      success: false,
+      message: errorMessage,
+      inputs: {
+        file: formData.get("file")!,
+      },
+    };
+  }
+}
+
+export async function uploadProductImages(
+  formData: FormData
+): Promise<ActionResponse> {
+  try {
+    const response = await uploadProductImagesMutation(formData);
+    console.log("res", response);
+
+    return {
+      success: true,
+      message: "Images uploaded successfully",
       inputs: {
         file: formData.get("file")!,
       }, // Retain previous inputs

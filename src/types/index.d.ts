@@ -97,11 +97,17 @@ declare type ResetPasswordData = {
 };
 
 declare type Feature = {
+  id?: string;
   description: string;
+  modelId: string;
 };
 
 declare type Inventory = {
   quantity: number;
+  id: string;
+  modelId: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 declare type Category = {
@@ -113,8 +119,8 @@ declare type Category = {
 
 declare type Subcategory = {
   name: string;
-
   categoryId: string;
+  category?: Category;
   createdAt?: string;
   updatedAt?: string;
   id?: string;
@@ -126,16 +132,46 @@ declare type Model = {
   price: number;
   features: Feature[];
   inventory: Inventory;
+  id?: string;
+  productId?: string;
+  price: number;
+  createdAt?: string;
+  updatedAt?: string;
+  inventory?: Inventory;
 };
 
 declare type ProductData = {
+  id?: string;
   name: string;
   subCategoryId: string;
-  defaultPrice: string;
-  models: Model[] | string;
+  subCategory: Subcategory;
+  models: Model[];
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+declare type FetchProductsResponse = {
+  page: number;
+  limit: number;
+  totalPages: number;
+  totalResults: number;
+  results: ProductData[];
 };
 
 declare type ProductQueryParams = {
   page: number;
   limit: number;
+};
+
+declare type FlattenProductsData = {
+  productId: string;
+  productName: string;
+  category: string;
+  subCategory: string;
+  modelId: string;
+  modelName: string;
+  description: string;
+  price: number;
+  inventory: number;
+  features: Feature[];
 };
