@@ -110,9 +110,11 @@ export function SubCategoryForm() {
                   <SelectItem value="" disabled>
                     Error loading categories
                   </SelectItem>
-                ) : categories?.data?.length ? (
+                ) : categories?.data &&
+                  Array.isArray(categories.data) &&
+                  categories.data.length > 0 ? (
                   categories.data.map((category: Category) => (
-                    <SelectItem key={category.id} value={category.id}>
+                    <SelectItem key={category.id} value={category.id!}>
                       {category.name}
                     </SelectItem>
                   ))
