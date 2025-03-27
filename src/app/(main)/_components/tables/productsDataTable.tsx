@@ -36,7 +36,6 @@ import { Button } from "@/components/ui/button";
 import { MoreHorizontal, ChevronUp, ChevronDown } from "lucide-react";
 import { useProducts } from "@/hooks/use-products";
 
-import ProductEditSheet from "./product-sidebar";
 import {
   Dialog,
   DialogContent,
@@ -359,11 +358,6 @@ const ProductsTable = () => {
         </Pagination>
       </div>
 
-      <ProductEditSheet
-        isSheetOpen={isSheetOpen}
-        setIsSheetOpen={setIsSheetOpen}
-        selectedProduct={selectedProduct!}
-      />
       <UploadImagesDialog
         isOpened={isDialogOpen && selectedProduct !== null}
         modelID={selectedProduct?.modelId || ""}
