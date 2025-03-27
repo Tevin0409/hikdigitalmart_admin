@@ -122,19 +122,20 @@ const ProductsTable = () => {
     );
   });
 
-  const sortedData = [...filteredData].sort((a, b) => {
-    if (a[sortConfig.key] < b[sortConfig.key]) {
-      return sortConfig.direction === "asc" ? -1 : 1;
-    }
-    if (a[sortConfig.key] > b[sortConfig.key]) {
-      return sortConfig.direction === "asc" ? 1 : -1;
-    }
-    return 0;
-  });
+  // const sortedData = [...filteredData].sort((a, b) => {
+  //   if (a[sortConfig.key] < b[sortConfig.key]) {
+  //     return sortConfig.direction === "asc" ? -1 : 1;
+  //   }
+  //   if (a[sortConfig.key] > b[sortConfig.key]) {
+  //     return sortConfig.direction === "asc" ? 1 : -1;
+  //   }
+  //   return 0;
+  // });
 
-  const totalPages = Math.ceil(sortedData.length / rowsPerPage);
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const paginatedData = sortedData.slice(startIndex, startIndex + rowsPerPage);
+  // const totalPages = Math.ceil(sortedData.length / rowsPerPage);
+  // const startIndex = (currentPage - 1) * rowsPerPage;
+  // const paginatedData = sortedData.slice(startIndex, startIndex + rowsPerPage);
+  const paginatedData: FlattenProductsData[] | [] = [];
 
   const requestSort = (key: string) => {
     let direction = "asc";
@@ -275,11 +276,11 @@ const ProductsTable = () => {
 
       <div className="flex items-center justify-between mt-4">
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-500">
+          {/* <span className="text-sm text-gray-500">
             Showing {Math.min(startIndex + 1, sortedData.length)} to{" "}
             {Math.min(startIndex + rowsPerPage, sortedData.length)} of{" "}
             {sortedData.length} entries
-          </span>
+          </span> */}
           <Select
             value={rowsPerPage.toString()}
             onValueChange={(value) => {
@@ -312,7 +313,7 @@ const ProductsTable = () => {
                 }
               />
             </PaginationItem>
-
+            {/* 
             {[...Array(totalPages)].map((_, index) => {
               const pageNumber = index + 1;
 
@@ -353,7 +354,7 @@ const ProductsTable = () => {
                     : "cursor-pointer"
                 }
               />
-            </PaginationItem>
+            </PaginationItem> */}
           </PaginationContent>
         </Pagination>
       </div>
