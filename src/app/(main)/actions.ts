@@ -213,7 +213,7 @@ export async function createSubCategory(
   formData: FormData
 ): Promise<ActionResponse> {
   try {
-    const rawData: Subcategory = {
+    const rawData = {
       name: formData.get("name") as string,
       categoryId: formData.get("categoryId") as string,
     };
