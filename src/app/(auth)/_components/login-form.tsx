@@ -34,41 +34,22 @@ export function LoginForm() {
     initialState
   );
   const { setAccessToken } = useAuthStore();
-  // useEffect(() => {
-  //   if (state.success) {
-  //     toast.success(state.message);
-  //     // store user data in local storage
-  //     localStorage.setItem("user", JSON.stringify(state.data));
-  //     setAccessToken((state.data as LoginResponse).accessToken);
-  //     // redirect to home page
-  //     router.push("/dashboard");
-  //   }
-  // }, [state.success, state.message, state]);
+  useEffect(() => {
+    if (state.success) {
+      toast.success(state.message);
+      // store user data in local storage
+      localStorage.setItem("user", JSON.stringify(state.data));
+      setAccessToken((state.data as LoginResponse).accessToken);
+      // redirect to home page
+      router.push("/dashboard");
+    }
+  }, [state.success, state.message, state]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   const formData = new FormData(e.currentTarget);
-  //   const result = dispatch(formData); // Send formData as payload
-
-  //   if ((result as unknown as ActionResponse).success === false) {
-  //     setFormData((result as unknown as ActionResponse).inputs);
-  //   }
-  //   console.log("Result:", result);
-  // };
-
-  // const [state, dispatch, isPending] = useActionState(
-  //   async (
-  //     prevState: ActionResponse,
-  //     formData: FormData
-  //   ): Promise<ActionResponse> => {
-  //     return await login(prevState, formData);
-  //   },
-  //   initialState
-  // );
 
   return (
     // <form onSubmit={handleSubmit}>

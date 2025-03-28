@@ -41,6 +41,8 @@ export async function createSession(
   const session = await encrypt(payload);
   const cookieStore = await cookies();
 
+  console.log("Session:", session);
+
   cookieStore.set("session", session, {
     httpOnly: true,
     secure: true,
