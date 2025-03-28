@@ -27,42 +27,6 @@ export async function middleware(req: NextRequest) {
   }
 
   // Handle session refresh
-  if (isSessionExpired && refreshToken) {
-    console.log("Session expired, refreshing token...");
-    try {
-      const result = await refreshAccessToken();
-      if (result.data as LoginResponse) {
-        const {
-          accessToken,
-          refreshToken,
-          refreshTokenExpiresAt,
-          accessTokenExpiresAt,
-        } = result.data as LoginResponse;
-
-        // Use NextResponse to modify cookies
-        const response = NextResponse.next();
-        response.cookies.set("access_token", accessToken, {
-          secure: true,
-          sameSite: "strict",
-          path: "/",
-          expires: new Date(accessTokenExpiresAt),
-        });
-        response.cookies.set("refresh_token", refreshToken as string, {
-          secure: true,
-          sameSite: "strict",
-          path: "/",
-          expires: new Date(refreshTokenExpiresAt),
-        });
-
-        // Update session
-        await updateSession();
-        return response;
-      }
-    } catch (error) {
-      console.error("Failed to refresh token:", error);
-      return NextResponse.redirect(new URL("/", req.url));
-    }
-  }
 
   return NextResponse.next();
 }
