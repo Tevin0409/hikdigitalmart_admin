@@ -34,16 +34,16 @@ export function LoginForm() {
     initialState
   );
   const { setAccessToken } = useAuthStore();
-  useEffect(() => {
-    if (state.success) {
-      toast.success(state.message);
-      // store user data in local storage
-      localStorage.setItem("user", JSON.stringify(state.data));
-      setAccessToken((state.data as LoginResponse).accessToken);
-      // redirect to home page
-      router.push("/dashboard");
-    }
-  }, [state.success, state.message, state]);
+  // useEffect(() => {
+  //   if (state.success) {
+  //     toast.success(state.message);
+  //     // store user data in local storage
+  //     localStorage.setItem("user", JSON.stringify(state.data));
+  //     setAccessToken((state.data as LoginResponse).accessToken);
+  //     // redirect to home page
+  //     router.push("/dashboard");
+  //   }
+  // }, [state.success, state.message, state]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
