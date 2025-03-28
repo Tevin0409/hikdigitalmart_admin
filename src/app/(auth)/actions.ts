@@ -98,6 +98,7 @@ export async function refreshAccessToken(): Promise<ActionResponse> {
     const refreshToken = cookieStore.get("refresh_token");
 
     const user_id = cookieStore.get("id");
+
     if (!refreshToken || !user_id) {
       return {
         success: false,
@@ -106,30 +107,45 @@ export async function refreshAccessToken(): Promise<ActionResponse> {
           email: "",
           password: "",
         },
+        data: null,
+      };
+    } else {
+      const refreshData = {
+        id: user_id.value,
+        refreshToken: refreshToken.value as string,
+      };
+      const response = await refreshAccessTokenMutation(refreshData);
+      cookieStore.set("access_token", response.data.accessToken as string, {
+        secure: true,
+        sameSite: "strict",
+        path: "/",
+        expires: new Date(response.data.accessTokenExpiresAt),
+      });
+      cookieStore.set("refresh_token", response.data.refreshToken as string, {
+        secure: true,
+        sameSite: "strict",
+        path: "/",
+        expires: new Date(response.data.refreshTokenExpiresAt),
+      });
+      return {
+        success: true,
+        message: "Access token refreshed successfully",
+        inputs: {
+          email: "",
+          password: "",
+        },
+        data: response.data,
       };
     }
-    const response = await refreshAccessTokenMutation({
-      id: user_id.value,
-      refreshToken: refreshToken.value,
-    });
-    return {
-      success: true,
-      message: "Access token refreshed successfully",
-      inputs: {
-        email: "",
-        password: "",
-      },
-      data: response.data,
-    };
   } catch (error) {
-    console.log("Error refreshing access token:", error);
     return {
       success: false,
-      message: "Unable to refresh access token",
+      message: "Unable to  access token",
       inputs: {
         email: "",
         password: "",
       },
+      data: null,
     };
   }
 }

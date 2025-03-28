@@ -10,10 +10,6 @@ export async function middleware(req: NextRequest) {
   const isProtectedRoute = protectedRoutes.some((route) =>
     path.startsWith(route)
   );
-
-  console.log("Path:", path);
-  console.log("Is protected route:", isProtectedRoute);
-
   const sessionCookie = req.cookies.get("session")?.value;
   const refreshToken = req.cookies.get("refresh_token")?.value;
   const accessToken = req.cookies.get("access_token")?.value;
@@ -21,7 +17,6 @@ export async function middleware(req: NextRequest) {
   let session;
   try {
     session = await decrypt(sessionCookie);
-    console.log("Session:", session);
   } catch (error) {
     console.error("Decrypt error:", error);
   }
@@ -30,18 +25,14 @@ export async function middleware(req: NextRequest) {
     (session as SessionPayload)?.expiresAt &&
     new Date((session as SessionPayload).expiresAt) < new Date();
 
-  console.log("Session expired:", isSessionExpired);
-
   if (isProtectedRoute && (!session?.userId || !accessToken)) {
-    console.log("Redirecting: Missing session or access token");
     return NextResponse.redirect(new URL("/", req.url));
   }
 
   if (isSessionExpired && refreshToken) {
-    console.log("Session expired, attempting refresh...");
     try {
       const result = await refreshAccessToken();
-      console.log("Refresh token result:", result);
+
       if (result.data as LoginResponse) {
         const {
           accessToken,
@@ -66,6 +57,8 @@ export async function middleware(req: NextRequest) {
 
         await updateSession();
         return response;
+      } else {
+        return NextResponse.redirect(new URL("/", req.url));
       }
     } catch (error) {
       console.error("Failed to refresh token:", error);
