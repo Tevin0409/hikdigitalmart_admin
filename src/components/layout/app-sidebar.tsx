@@ -196,7 +196,7 @@ export default function AppSidebar() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <Link href="/account" className="w-full">
+                  <Link href="/dashboard/profile" className="w-full">
                     <DropdownMenuItem className="w-full cursor-pointer">
                       <BadgeCheck className="mr-2 h-4 w-4" />
                       Account

@@ -30,6 +30,18 @@ export const OtpFormSchema = z.object({
   otp: z.number().min(6).max(6),
 });
 
+export const ChangePasswordFormSchema = z.object({
+  oldPassword: z.string().min(8),
+  newPassword: z.string().min(8),
+  confirmNewPassword: z.string().min(8),
+});
+
+export const UserInfoFormSchema = z.object({
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
+  phoneNumber: z.string().min(1),
+});
+
 export const addressSchema = z.object({
   streetAddress: z.string().min(1, "Street address is required"),
   apartment: z.string().optional(),

@@ -24,6 +24,10 @@ export const refreshAccessTokenMutation = async (data: RefreshData) =>
   await API.post("/auth/refresh", data);
 export const forgotPasswordMutation = async (data: ForgotPasswordData) =>
   await API.post("/auth/forgot-password", data);
+export const changePasswordMutation = async (data: ChangePasswordData) =>
+  await API.post("/auth/change-password", data);
+export const changeUserInfoMutation = async (id: string, data: UserInfoData) =>
+  await API.put(`/admin/user/update-user/${id}`, data);
 
 // USERS
 export const getAllUsersQuery = async () =>

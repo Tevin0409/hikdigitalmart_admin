@@ -62,6 +62,18 @@ declare type LoginResponse = {
   };
 };
 
+declare type ChangePasswordData = {
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+};
+
+declare type UserInfoData = {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+};
+
 declare type SessionPayload = {
   userId: string;
   roleId: string;

@@ -32,7 +32,6 @@ export async function middleware(req: NextRequest) {
   if (isSessionExpired && refreshToken) {
     try {
       const result = await refreshAccessToken();
-
       if (result.data as LoginResponse) {
         const {
           accessToken,
