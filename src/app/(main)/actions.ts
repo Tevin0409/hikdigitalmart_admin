@@ -2,12 +2,13 @@
 import { AxiosError } from "axios";
 import z from "zod";
 import {
-  ProductFormSchema,
+  ChangePasswordFormSchema,
   CategoryFormSchema,
   SubcategoryFormSchema,
+  UserInfoFormSchema,
 } from "@/app/_lib/definitions";
 import {
-  createProductMutation,
+  changePasswordMutation,
   createCategoryMutation,
   bulkUploadProductsMutation,
   createSubcategoryMutation,
@@ -15,35 +16,109 @@ import {
   getAllSubcategoriesQuery,
   getAllProductsQuery,
   uploadProductImagesMutation,
+  changeUserInfoMutation,
 } from "@/lib/api";
 import { revalidatePath } from "next/cache";
 
-// export async function createProduct(state: ActionResponse, formData: FormData) {
-//   try {
-//     const rawData = {
-//       name: formData.get("name"),
-//       subCategoryId: formData.get("subCategoryId"),
-//       defaultPrice: parseFloat(formData.get("defaultPrice") as string),
-//       models: JSON.parse(formData.get("models") as string),
-//     };
-//     return await validateAndPost(
-//       ProductFormSchema,
-//       rawData,
-//       createProductMutation
-//     );
-//   } catch (error) {
-//     const errorMessage =
-//       (error as AxiosError<{ error: { message: string } }>)?.response?.data
-//         ?.error?.message || "An unexpected error occurred";
+/**
+ * Start Auth Actions
+ */
+export async function changePassword(
+  state: ActionResponse,
+  formData: FormData
+): Promise<ActionResponse> {
+  try {
+    const rawData: ChangePasswordData = {
+      oldPassword: formData.get("oldPassword") as string,
+      newPassword: formData.get("newPassword") as string,
+      confirmNewPassword: formData.get("confirmNewPassword") as string,
+    };
 
-//     return {
-//       success: false,
-//       message: errorMessage,
-//       inputs: state.inputs, // Retain previous inputs
-//     };
-//   }
-// }
+    const validatedData = ChangePasswordFormSchema.safeParse(rawData);
 
+    if (!validatedData.success) {
+      return {
+        success: false,
+        message: "Please fix the errors in the form",
+        inputs: rawData,
+        errors: validatedData.error.flatten().fieldErrors,
+      };
+    }
+
+    const changePasswordResponse = await changePasswordMutation(
+      validatedData.data
+    );
+
+    return {
+      success: true,
+      message:
+        changePasswordResponse?.data?.message ||
+        "Password changed successfully",
+      inputs: rawData,
+    };
+  } catch (error) {
+    const errorMessage =
+      (error as AxiosError<{ error: { message: string } }>)?.response?.data
+        ?.error?.message || "An unexpected error occurred";
+
+    return {
+      success: false,
+      message: errorMessage,
+      inputs: state.inputs, // Retain previous inputs
+    };
+  }
+}
+
+export async function changeUserInfo(
+  state: ActionResponse,
+  formData: FormData,
+  id: string
+): Promise<ActionResponse> {
+  try {
+    const rawData = {
+      firstName: formData.get("firstName") as string,
+      lastName: formData.get("lastName") as string,
+      phoneNumber: formData.get("phoneNumber") as string,
+    };
+
+    const validatedData = UserInfoFormSchema.safeParse(rawData);
+
+    if (!validatedData.success) {
+      return {
+        success: false,
+        message: "Please fix the errors in the form",
+        inputs: rawData,
+        errors: validatedData.error.flatten().fieldErrors,
+      };
+    }
+
+    const userInfoResponse = await changeUserInfoMutation(
+      id,
+      validatedData.data
+    );
+
+    return {
+      success: true,
+      message: "User info updated successfully",
+      inputs: rawData,
+      data: userInfoResponse.data,
+    };
+  } catch (error) {
+    const errorMessage =
+      (error as AxiosError<{ error: { message: string } }>)?.response?.data
+        ?.error?.message || "An unexpected error occurred";
+
+    return {
+      success: false,
+      message: errorMessage,
+      inputs: state.inputs, // Retain previous inputs
+    };
+  }
+}
+/**
+ * End Auth Actions
+ 
+ */
 export async function createCategory(
   state: ActionResponse,
   formData: FormData
