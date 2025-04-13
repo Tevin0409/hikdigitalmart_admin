@@ -8,6 +8,7 @@ import {
   UserInfoFormSchema,
 } from "@/app/_lib/definitions";
 import {
+  getDashboardSummaryQuery,
   changePasswordMutation,
   createCategoryMutation,
   bulkUploadProductsMutation,
@@ -17,6 +18,7 @@ import {
   getAllProductsQuery,
   uploadProductImagesMutation,
   changeUserInfoMutation,
+  getAllSalesQuery,
 } from "@/lib/api";
 import { revalidatePath } from "next/cache";
 
@@ -115,8 +117,31 @@ export async function changeUserInfo(
     };
   }
 }
+
 /**
- * End Auth Actions
+ * Start Dashboard Actions
+ */
+export async function getDashboardSummary(): Promise<FetchResponse> {
+  try {
+    const res = await getDashboardSummaryQuery();
+
+    return {
+      success: true,
+      message: "Dashboard summary fetched successfully",
+      data: res.data,
+    };
+  } catch (error) {
+    console.error("Error fetching dashboard summary:", error);
+    return {
+      success: false,
+      message: "Failed to fetch dashboard summary",
+      data: null,
+    };
+  }
+}
+
+/**
+ * End Dashboard Actions
  
  */
 export async function createCategory(
@@ -327,29 +352,33 @@ export async function createSubCategory(
   }
 }
 
-// export async function createSubcategory(
-//   state: ActionResponse,
-//   formData: FormData
-// ) {
-//   try {
-//     const rawData = {
-//       name: formData.get("name"),
-//       categoryId: formData.get("categoryId"),
-//     };
-//     return await validateAndPost(
-//       SubcategoryFormSchema,
-//       rawData,
-//       createSubcategoryMutation
-//     );
-//   } catch (error) {
-//     const errorMessage =
-//       (error as AxiosError<{ error: { message: string } }>)?.response?.data
-//         ?.error?.message || "An unexpected error occurred";
+/**
+ * Start Orders Actions
+ */
+export async function getAllOrders(
+  params: OrderQueryParams
+): Promise<FetchResponse> {
+  try {
+    // Replace this with your actual API call
+    const res = await getAllSalesQuery({
+      ...params,
+    });
 
-//     return {
-//       success: false,
-//       message: errorMessage,
-//       inputs: state.inputs, // Retain previous inputs
-//     };
-//   }
-// }
+    return {
+      success: true,
+      message: "Orders fetched successfully",
+      data: res.data,
+    };
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    return {
+      success: false,
+      message: "Failed to fetch orders",
+      data: null,
+    };
+  }
+}
+
+/**
+ * End Orders Actions
+ */

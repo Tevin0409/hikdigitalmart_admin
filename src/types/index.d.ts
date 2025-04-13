@@ -24,10 +24,10 @@ declare type ActionResponse = {
   errors?: Record<string, string[]>;
   data?: unknown;
 };
-declare type FetchResponse = {
+type FetchResponse<T = unknown> = {
   success: boolean;
   message: string;
-  data?: unknown;
+  data?: T;
 };
 declare type AddressFormData = {
   streetAddress: string;
@@ -186,4 +186,74 @@ declare type FlattenProductsData = {
   price: number;
   inventory: number;
   features: Feature[];
+};
+
+declare type OrderQueryParams = {
+  page?: number;
+  limit?: number;
+  search?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+  status?: string;
+};
+
+declare type OrdersData = {
+  page: number;
+  limit: number;
+  totalPages: number;
+  totalResults: number;
+  results: Order[];
+};
+
+declare type ProductModel = {
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+};
+
+declare type OrderItem = {
+  id: string;
+  orderId: string;
+  productModelId: string;
+  quantity: number;
+  createdAt: string;
+  updatedAt: string;
+  productModel: ProductModel;
+};
+
+declare type Order = {
+  id: string;
+  userId: string;
+  orderPrice: number;
+  vat: number;
+  total: number;
+  first_name: string;
+  last_name: string;
+  company_name: string | null;
+  street_address: string;
+  apartment: string | null;
+  town: string;
+  phone_number: string;
+  email: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  orderItems: OrderItem[];
+};
+
+declare type SummaryData = {
+  revenueKsh: number;
+  totalOrders: number;
+  topCustomers: {
+    customerId: string;
+    name: string;
+    email: string;
+    totalSpent: number;
+  }[];
+  topModels: {
+    modelId: string;
+    name: string;
+    quantityOrdered: number;
+  }[];
 };
