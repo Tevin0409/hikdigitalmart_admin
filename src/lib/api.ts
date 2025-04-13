@@ -29,6 +29,10 @@ export const changePasswordMutation = async (data: ChangePasswordData) =>
 export const changeUserInfoMutation = async (id: string, data: UserInfoData) =>
   await API.put(`/admin/user/update-user/${id}`, data);
 
+// DASHBOARD
+export const getDashboardSummaryQuery = async () =>
+  await API.get("/admin/dashboard");
+
 // USERS
 export const getAllUsersQuery = async () =>
   await API.get("/user/get-all-users");
@@ -38,6 +42,10 @@ export const getUserByEmailQuery = async (email: string) =>
   await API.get(`/user/get-user-by-email/${email}`);
 export const updateUserMutation = async (id: string, data: object) =>
   await API.put(`/user/update-user/${id}`, data);
+
+// SALES
+export const getAllSalesQuery = async (params: OrderQueryParams) =>
+  await API.get("/admin/product/orders", { params });
 
 // PRODUCTS
 export const getAllProductsQuery = async (params: ProductQueryParams) =>
