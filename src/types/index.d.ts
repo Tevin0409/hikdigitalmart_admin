@@ -256,4 +256,21 @@ declare type SummaryData = {
     name: string;
     quantityOrdered: number;
   }[];
+  inventoryValue: number;
+  salesByCategory: {
+    [category: string]: number;
+  };
+  salesPerDuration: {
+    monthly: {
+      [month: string]: number;
+    };
+    weekly: {
+      [week: string]: number;
+    };
+    yearly: {
+      [year: string]: number;
+    };
+  };
 };
+
+declare type DurationKey = "monthly" | "weekly" | "yearly";
