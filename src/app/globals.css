@@ -6,6 +6,11 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.bg-teal {
+  background-color: #008080;
+}
+
+
 @layer base {
   :root {
     --background: 0 0% 100%;
