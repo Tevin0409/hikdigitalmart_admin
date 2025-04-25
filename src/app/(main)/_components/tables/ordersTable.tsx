@@ -49,7 +49,7 @@ import { useOrders } from "@/hooks/use-orders";
 
 const flattenOrdersData = (data: OrdersData) => {
     const flattenedData: Order[] = [];
-
+    console.log("provided data", data);
     if (!data.results) return flattenedData;
 
     data.results.forEach((order: Order) => {
@@ -81,7 +81,7 @@ const flattenOrdersData = (data: OrdersData) => {
 type SortConfig = {
     key: keyof Order;
     direction: "asc" | "desc";
-  };
+};
 
 const OrdersTable = () => {
     const [searchTerm, setSearchTerm] = useState<string>("");
@@ -93,10 +93,17 @@ const OrdersTable = () => {
     });
 
     const { data: response, isLoading, isError } = useOrders();
-    const ordersData = response?.data as OrdersData;
-    const orders: Order[] = ordersData.results ?? [];
 
-    // Filter + sort
+    if (isLoading)
+        return <div className="flex justify-center p-6">Loading orders...</div>;
+    if (isError)
+        return (
+            <div className="flex justify-center p-6 text-red-500">
+                Error loading orders
+            </div>
+        );
+    const orders = flattenOrdersData(response?.data as OrdersData);
+
     const processedOrders = useMemo(() => {
         let filtered = orders.filter((order) => {
             const term = searchTerm.toLowerCase();
@@ -148,15 +155,6 @@ const OrdersTable = () => {
             <ChevronDown className="ml-1 h-4 w-4 inline" />
         );
     };
-
-    if (isLoading)
-        return <div className="flex justify-center p-6">Loading orders...</div>;
-    if (isError)
-        return (
-            <div className="flex justify-center p-6 text-red-500">
-                Error loading orders
-            </div>
-        );
 
     return (
         <div className="container mx-auto py-6">
