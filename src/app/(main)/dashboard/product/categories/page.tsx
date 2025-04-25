@@ -100,7 +100,7 @@ const Categories = (props: pageProps) => {
         <Suspense
           fallback={<DataTableSkeleton columnCount={5} rowCount={10} />}
         >
-          <Tabs defaultValue="account">
+          <Tabs defaultValue="categories">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="categories">Categories</TabsTrigger>
               <TabsTrigger value="subCategories">Subcategories</TabsTrigger>

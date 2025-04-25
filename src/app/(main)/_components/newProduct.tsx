@@ -1,4 +1,5 @@
-import { useState } from "react";
+"use client"
+import { useActionState, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -27,6 +28,12 @@ import {
   Loader,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { z } from "zod";
+import { createProduct } from "../actions";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+// import { Product } from '../../../constants/data';
 
 export default function NewProductModal({
   open,
@@ -224,3 +231,166 @@ export default function NewProductModal({
     </Dialog>
   );
 }
+
+export const ProductFormSchema = z.object({
+  productData: z.object({
+    name: z.string().min(1),
+    subCategoryId: z.string().uuid(),
+    defaultPrice: z.number().min(0),
+    models: z.array(
+      z.object({
+        name: z.string().min(1),
+        description: z.string().optional(),
+        price: z.number().min(0),
+        features: z.array(z.object({ description: z.string().min(1) })),
+        inventory: z.object({ quantity: z.number().int().min(0) }),
+      })
+    ),
+  }),
+})
+export type ProductPayload = z.infer<typeof ProductFormSchema>;
+
+export interface ModelInput {
+  name: string
+  description?: string
+  price: number
+  features: { description: string }[];
+  inventory: { quantity: number }
+}
+export interface ProductFormState {
+  name: string
+  subCategoryId: string
+  defaultPrice: number
+  models: ModelInput[]
+}
+
+export function NewProductModal2({ open, onClose, subCategories }: { open: boolean; onClose: () => void; subCategories: Subcategory[] }) {
+  const router = useRouter()
+  const [data, setData] = useState<ProductFormState>({
+    name: '',
+    subCategoryId: '',
+    defaultPrice: 0,
+    models: [],
+  })
+
+  const [state, dispatch, isPending] = useActionState(
+    async (prev: ActionResponse, formData: FormData) => createProduct(prev, formData),
+    { success: false, message: '', inputs: {} }
+  )
+
+  useEffect(() => {
+    if (state.success) {
+      toast.success(state.message)
+      router.push('/dashboard/product')
+    }
+  }, [state.success])
+
+  const handleAddModel = () => {
+    setData(prev => ({
+      ...prev,
+      models: [
+        ...prev.models,
+        { name: '', description: '', price: 0, features: [{ description: '' }], inventory: { quantity: 0 } }
+      ]
+    }))
+  }
+
+  const handleModelChange = (idx: number, key: keyof ModelInput, val: string) => {
+    const models = [...data.models]
+    models[idx] = {
+      ...models[idx],
+      [key]: key === 'price' ? parseFloat(val) : val,
+    } as ModelInput
+    setData({ ...data, models })
+  }
+
+  const handleFeatureChange = (mIdx: number, fIdx: number, val: string) => {
+    const models = [...data.models]
+    models[mIdx].features[fIdx].description = val
+    setData({ ...data, models })
+  }
+
+  const handleAddFeature = (mIdx: number) => {
+    const models = [...data.models]
+    models[mIdx].features.push({ description: '' })
+    setData({ ...data, models })
+  }
+
+  const handleQuantityChange = (idx: number, val: string) => {
+    const models = [...data.models]
+    models[idx].inventory.quantity = parseInt(val, 10) || 0
+    setData({ ...data, models })
+  }
+
+  const handleRemoveModel = (idx: number) => {
+    setData({ ...data, models: data.models.filter((_, i) => i !== idx) })
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-3xl p-6 space-y-4 overflow-y-auto max-h-[70dvh]">
+        <DialogHeader>
+          <DialogTitle>
+            Add New Product
+          </DialogTitle>
+        </DialogHeader>
+        <form action={dispatch} className="space-y-4">
+          {/* Name */}
+          <div>
+            <Label htmlFor="name">Name</Label>
+            <Input id="name" name="name" value={data.name} onChange={e => setData({ ...data, name: e.target.value })} required />
+          </div>
+
+          {/* SubCategory */}
+          <div>
+            <Label htmlFor="subCategoryId">Sub Category</Label>
+            <Select name="subCategoryId" value={data.subCategoryId} onValueChange={val => setData({ ...data, subCategoryId: val })}>
+              <SelectTrigger><SelectValue placeholder="Select subcategory" /></SelectTrigger>
+              <SelectContent>
+                {subCategories.map(sc => <SelectItem key={sc.id} value={sc.id!}>{sc.name}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Default Price */}
+          <div>
+            <Label htmlFor="defaultPrice">Default Price</Label>
+            <Input id="defaultPrice" name="defaultPrice" type="number" value={data.defaultPrice.toString()} onChange={e => setData({ ...data, defaultPrice: parseFloat(e.target.value) || 0 })} required />
+          </div>
+
+          {/* Hidden models JSON */}
+          <input type="hidden" name="models" value={JSON.stringify(data.models)} />
+
+          {/* Models section */}
+          {data.models.map((m, mIdx) => (
+            <div key={mIdx} className="p-4 border rounded space-y-4">
+              <div className="flex justify-between items-center">
+                <h4 className="font-semibold">Model #{mIdx + 1}</h4>
+                <Button variant="destructive" size="sm" onClick={() => handleRemoveModel(mIdx)}>Remove</Button>
+              </div>
+
+              <div><Label>Name</Label><Input value={m.name} onChange={e => handleModelChange(mIdx, 'name', e.target.value)} /></div>
+              <div><Label>Description</Label><Input value={m.description || ''} onChange={e => handleModelChange(mIdx, 'description', e.target.value)} /></div>
+              <div><Label>Price</Label><Input type="number" value={m.price.toString()} onChange={e => handleModelChange(mIdx, 'price', e.target.value)} /></div>
+
+              <div className="space-y-2">
+                <Label>Features</Label>
+                {m.features.map((f, fIdx) => <Input key={fIdx} value={f.description} onChange={e => handleFeatureChange(mIdx, fIdx, e.target.value)} placeholder="Feature description" />)}
+                <Button type="button" size="sm" onClick={() => handleAddFeature(mIdx)}>Add Feature</Button>
+              </div>
+
+              <div><Label>Quantity</Label><Input type="number" value={m.inventory.quantity.toString()} onChange={e => handleQuantityChange(mIdx, e.target.value)} /></div>
+            </div>
+          ))}
+
+          <div className="flex flex-row gap-2">
+          <Button type="button" onClick={handleAddModel}>Add Model</Button>
+          <Button type="submit" disabled={isPending}>Create Product</Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+
