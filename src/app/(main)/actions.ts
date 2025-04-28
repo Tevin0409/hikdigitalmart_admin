@@ -19,8 +19,10 @@ import {
   uploadProductImagesMutation,
   changeUserInfoMutation,
   getAllSalesQuery,
+  createProductMutation,
 } from "@/lib/api";
 import { revalidatePath } from "next/cache";
+import { ProductFormSchema, ProductPayload } from "./_components/newProduct";
 
 /**
  * Start Auth Actions
@@ -267,6 +269,125 @@ export async function getProducts(
     };
   }
 }
+
+// export async function createProduct(
+//   state: ActionResponse,
+//   formData: FormData
+// ): Promise<ActionResponse> {
+//   try {
+//     const rawData = {
+//       name: formData.get("name") as string,
+//       categoryId: formData.get("categoryId") as string,
+//     };
+
+//     const validatedData = SubcategoryFormSchema.safeParse(rawData);
+
+//     if (!validatedData.success) {
+//       return {
+//         success: false,
+//         message: "Please fix the errors in the form",
+//         inputs: rawData,
+//         errors: validatedData.error.flatten().fieldErrors,
+//       };
+//     }
+
+//     const createProductResponse = await createProductMutation(
+//       validatedData.data
+//     );
+//     console.log(createProductResponse);
+
+//     return {
+//       success: true,
+//       message: "Subcategory created successfully",
+//       inputs: rawData,
+//     };
+//   } catch (error) {
+//     const errorMessage =
+//       (error as AxiosError<{ error: { message: string } }>)?.response?.data
+//         ?.error?.message || "An unexpected error occurred";
+
+//     return {
+//       success: false,
+//       message: errorMessage,
+//       inputs: state.inputs, // Retain previous inputs
+//     };
+//   }
+// }
+
+// export async function createProduct(
+//   prevState: ActionResponse,
+//   formData: FormData
+// ): Promise<ActionResponse> {
+//   try {
+//     const name = formData.get("name") as string
+//     const subCategoryId = formData.get("subCategoryId") as string
+//     const defaultPrice = parseFloat(formData.get("defaultPrice") as string)
+//     // models come in as a JSON string
+//     const modelsJson = formData.get("models") as string
+//     const models = JSON.parse(modelsJson) as ProductPayload['productData']['models']
+
+//     const rawPayload: ProductPayload = {
+//       productData: { name, subCategoryId, defaultPrice, models }
+//     }
+
+//     const parsed = ProductFormSchema.safeParse(rawPayload)
+//     if (!parsed.success) {
+//       return {
+//         success: false,
+//         message: "Please fix the errors in the form",
+//         inputs: rawPayload,
+//         errors: parsed.error.flatten().fieldErrors,
+//       }
+//     }
+
+//     await createProductMutation(parsed.data)
+//     return { success: true, message: "Product created successfully", inputs: rawPayload }
+//   } catch (error) {
+//     return {
+//       success: false,
+//       message: (error as Error).message || "An unexpected error occurred",
+//       inputs: prevState.inputs,
+//     }
+//   }
+// }
+
+export async function createProduct(
+  prevState: ActionResponse,
+  formData: FormData
+): Promise<ActionResponse> {
+  try {
+    const name = formData.get("name") as string
+    const subCategoryId = formData.get("subCategoryId") as string
+    const defaultPrice = parseFloat(formData.get("defaultPrice") as string)
+    const models = JSON.parse(formData.get("models") as string) as ProductPayload['productData']['models']
+
+    const rawPayload: ProductPayload = { productData: { name, subCategoryId, defaultPrice, models } }
+
+    const parsed = ProductFormSchema.safeParse(rawPayload)
+    if (!parsed.success) {
+      // Convert formData to a simpler record for displaying errors
+      const entries = Object.fromEntries(formData.entries())
+      return {
+        success: false,
+        message: "Please fix the errors in the form",
+        inputs: entries,
+        errors: parsed.error.flatten().fieldErrors,
+      }
+    }
+
+    await createProductMutation(parsed.data)
+    // On success, preserve simple record
+    const entries = Object.fromEntries(formData.entries())
+    return { success: true, message: "Product created successfully", inputs: entries }
+  } catch (error) {
+    return {
+      success: false,
+      message: (error as Error).message || "An unexpected error occurred",
+      inputs: prevState.inputs,
+    }
+  }
+}
+
 export async function getCategories(): Promise<FetchResponse> {
   try {
     const res = await getAllCategoriesQuery();

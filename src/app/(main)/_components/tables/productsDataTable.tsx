@@ -73,7 +73,14 @@ const ProductsTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [sortConfig, setSortConfig] = useState({
+  // const [sortConfig, setSortConfig] = useState({
+  //   key: "modelName",
+  //   direction: "asc",
+  // });
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof FlattenProductsData;
+    direction: "asc" | "desc";
+  }>({
     key: "modelName",
     direction: "asc",
   });
@@ -122,23 +129,31 @@ const ProductsTable = () => {
     );
   });
 
-  // const sortedData = [...filteredData].sort((a, b) => {
-  //   if (a[sortConfig.key] < b[sortConfig.key]) {
-  //     return sortConfig.direction === "asc" ? -1 : 1;
-  //   }
-  //   if (a[sortConfig.key] > b[sortConfig.key]) {
-  //     return sortConfig.direction === "asc" ? 1 : -1;
-  //   }
-  //   return 0;
-  // });
+  const sortedData = [...filteredData].sort((a, b) => {
+    if (a[sortConfig.key] < b[sortConfig.key]) {
+      return sortConfig.direction === "asc" ? -1 : 1;
+    }
+    if (a[sortConfig.key] > b[sortConfig.key]) {
+      return sortConfig.direction === "asc" ? 1 : -1;
+    }
+    return 0;
+  });
 
-  // const totalPages = Math.ceil(sortedData.length / rowsPerPage);
-  // const startIndex = (currentPage - 1) * rowsPerPage;
-  // const paginatedData = sortedData.slice(startIndex, startIndex + rowsPerPage);
-  const paginatedData: FlattenProductsData[] | [] = [];
+  const totalPages = Math.ceil(sortedData.length / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const paginatedData = sortedData.slice(startIndex, startIndex + rowsPerPage);
+  // const paginatedData: FlattenProductsData[] | [] = [];
 
-  const requestSort = (key: string) => {
-    let direction = "asc";
+  // const requestSort = (key: string) => {
+  //   let direction = "asc";
+  //   if (sortConfig.key === key && sortConfig.direction === "asc") {
+  //     direction = "desc";
+  //   }
+  //   setSortConfig({ key, direction });
+  // };
+
+  const requestSort = (key: keyof FlattenProductsData) => {
+    let direction: "asc" | "desc" = "asc";
     if (sortConfig.key === key && sortConfig.direction === "asc") {
       direction = "desc";
     }

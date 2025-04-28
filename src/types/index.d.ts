@@ -155,6 +155,7 @@ declare type Model = {
 declare type ProductData = {
   id?: string;
   name: string;
+  defaultPrice?: number;
   subCategoryId: string;
   subCategory: Subcategory;
   models: Model[];

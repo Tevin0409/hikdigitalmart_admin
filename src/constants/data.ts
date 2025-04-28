@@ -46,6 +46,33 @@ export const navItems: NavItem[] = [
     ], // No child items
   },
   {
+    title: "Orders",
+    url: "#",
+    icon: "billing",
+    isActive: false,
+    items: [
+      {
+        title: "Manage Orders",
+        url: "/dashboard/order",
+        icon: "employee",
+        shortcut: ["p", "p"],
+      },
+
+      // {
+      //   title: "User Logs",
+      //   url: "/dashboard/product/categories",
+      //   icon: "product",
+      //   shortcut: ["p", "p"],
+      // },
+      // {
+      //   title: "Inventory & Subcategories",
+      //   url: "/dashboard/product/categories",
+      //   icon: "product",
+      //   shortcut: ["p", "p"],
+      // },
+    ], // No child items
+  },
+  {
     title: "Users",
     url: "#",
     icon: "employee",

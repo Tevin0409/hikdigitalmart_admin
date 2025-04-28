@@ -27,6 +27,7 @@ import UploadProductsDialog from "../../_components/bulkupload";
 import { useProducts } from "@/hooks/use-products";
 import ProductsTable from "../../_components/tables/productsDataTable";
 import VignettePurchaseDialog, { NewProductModal2 } from "../../_components/newProduct";
+import OrdersTable from "../../_components/tables/ordersTable";
 
 type pageProps = {
   searchParams: Promise<SearchParams>;
@@ -46,12 +47,8 @@ const Products = (props: pageProps) => {
           <div className="flex items-center space-x-4">
             <Button variant="outline" onClick={() => setIsDialogOpen(true)}>
               <Plus className="mr-2 h-4 w-4" />
-              Add Product
+              New Order
             </Button>
-            {/* <VignettePurchaseDialog
-              open={isDialogOpen}
-              onClose={() => setIsDialogOpen(false)}
-            /> */}
             <NewProductModal2
               open={isDialogOpen}
               onClose={() => setIsDialogOpen(false)}
@@ -62,7 +59,7 @@ const Products = (props: pageProps) => {
         </div>
         <Separator />
 
-        <ProductsTable />
+        <OrdersTable />
       </div>
     </PageContainer>
   );
