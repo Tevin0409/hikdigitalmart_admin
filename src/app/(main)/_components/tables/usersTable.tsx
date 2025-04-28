@@ -91,42 +91,42 @@ const UsersTable = () => {
         );
 
         console.log("response data", response)
-    const orders = (response?.data).results;
+    // const orders = (response?.data).results;
     // const orders = flattenOrdersData(response?.data as OrdersData);
 
-    const processedOrders = useMemo(() => {
-        let filtered = orders.filter((order: { first_name: string; last_name: string; email: string; company_name: any; }) => {
-            const term = searchTerm.toLowerCase();
-            return (
-                order.first_name.toLowerCase().includes(term) ||
-                order.last_name.toLowerCase().includes(term) ||
-                order.email.toLowerCase().includes(term) ||
-                (order.company_name ?? "").toLowerCase().includes(term)
-            );
-        });
+    // const processedOrders = useMemo(() => {
+    //     let filtered = orders.filter((order: { first_name: string; last_name: string; email: string; company_name: any; }) => {
+    //         const term = searchTerm.toLowerCase();
+    //         return (
+    //             order.first_name.toLowerCase().includes(term) ||
+    //             order.last_name.toLowerCase().includes(term) ||
+    //             order.email.toLowerCase().includes(term) ||
+    //             (order.company_name ?? "").toLowerCase().includes(term)
+    //         );
+    //     });
 
-        filtered.sort((a: { [x: string]: any; }, b: { [x: string]: any; }) => {
-            const { key, direction } = sortConfig;
-            const aValue = a[key];
-            const bValue = b[key];
+    //     filtered.sort((a: { [x: string]: any; }, b: { [x: string]: any; }) => {
+    //         const { key, direction } = sortConfig;
+    //         const aValue = a[key];
+    //         const bValue = b[key];
 
-            if (aValue! < bValue!) return direction === "asc" ? -1 : 1;
-            if (aValue! > bValue!) return direction === "asc" ? 1 : -1;
-            return 0;
-        });
+    //         if (aValue! < bValue!) return direction === "asc" ? -1 : 1;
+    //         if (aValue! > bValue!) return direction === "asc" ? 1 : -1;
+    //         return 0;
+    //     });
 
-        return filtered;
-    }, [orders, searchTerm, sortConfig]);
+    //     return filtered;
+    // }, [orders, searchTerm, sortConfig]);
 
-    const totalPages = Math.ceil(processedOrders.length / rowsPerPage) || 1;
-    const paginated = useMemo(
-        () =>
-            processedOrders.slice(
-                (currentPage - 1) * rowsPerPage,
-                currentPage * rowsPerPage
-            ),
-        [processedOrders, currentPage, rowsPerPage]
-    );
+    // const totalPages = Math.ceil(processedOrders.length / rowsPerPage) || 1;
+    // const paginated = useMemo(
+    //     () =>
+    //         processedOrders.slice(
+    //             (currentPage - 1) * rowsPerPage,
+    //             currentPage * rowsPerPage
+    //         ),
+    //     [processedOrders, currentPage, rowsPerPage]
+    // );
 
     const requestSort = (key: keyof Order) => {
         setCurrentPage(1);
@@ -161,7 +161,7 @@ const UsersTable = () => {
             </div>
 
             <div className="border rounded-md">
-                <Table>
+                {/* <Table>
                     <TableHeader>
                         <TableRow>
                             <TableHead
@@ -234,7 +234,7 @@ const UsersTable = () => {
                             </TableRow>
                         )}
                     </TableBody>
-                </Table>
+                </Table> */}
             </div>
 
             <div className="flex items-center justify-between mt-4">

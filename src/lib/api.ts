@@ -35,7 +35,7 @@ export const getDashboardSummaryQuery = async () =>
 
 // USERS
 export const getAllUsersQuery = async () =>
-  await API.get("/user/get-all-users");
+  await API.get("/admin/user/get-all-users");
 export const getUserByIdQuery = async (id: string) =>
   await API.get(`/user/get-user/${id}`);
 export const getUserByEmailQuery = async (email: string) =>
