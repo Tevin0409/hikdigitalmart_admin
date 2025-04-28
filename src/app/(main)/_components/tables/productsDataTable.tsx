@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   Table,
@@ -40,14 +40,19 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import UploadImagesDialog from "../imageUpload";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useFetchCategories, useFetchSubCategories } from "@/hooks/use-categories";
 const flattenProductsData = (data: FetchProductsResponse) => {
   const flattenedData: FlattenProductsData[] = [];
 
   if (!data.results) return flattenedData;
+  console.log("products", data.results)
 
   data.results.forEach((product: ProductData) => {
     product.models.forEach((model) => {
@@ -62,11 +67,25 @@ const flattenProductsData = (data: FetchProductsResponse) => {
         price: model.price,
         inventory: model.inventory.quantity,
         features: model.features,
+        status: model.status,
+        isFeatured: model.isFeatured === "true" ? true : false,
       });
     });
   });
 
   return flattenedData;
+};
+
+type StatusType = "draft" | "active";
+
+// a minimal feature for your form
+type EditableFeature = { description: string };
+
+// drop the original `features` on FlattenProductsData and replace with your own
+type EditValues = Omit<FlattenProductsData, "features" | "status"> & {
+  features: EditableFeature[];
+  status: StatusType;       // reuse your StatusType
+  isFeatured: boolean;      // keep as boolean
 };
 
 const ProductsTable = () => {
@@ -86,9 +105,47 @@ const ProductsTable = () => {
   });
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
 
   const [selectedProduct, setSelectedProduct] =
     useState<FlattenProductsData | null>(null);
+  // const [editValues, setEditValues] = useState<Partial<FlattenProductsData>>({});
+  const [editValues, setEditValues] = useState<EditValues>({
+    modelName: "",
+    productName: "",
+    category: "",
+    subCategory: "",
+    description: "",
+    price: 0,
+    inventory: 0,
+    features: [],
+    productId: "",
+    modelId: "",
+    status: "draft",
+    isFeatured: false,
+  });
+
+  useEffect(() => {
+    if (selectedProduct) {
+      setEditValues({
+        modelName: selectedProduct.modelName,
+        modelId: selectedProduct.modelId,
+        productName: selectedProduct.productName,
+        productId: selectedProduct.productId,
+        category: selectedProduct.category,
+        subCategory: selectedProduct.subCategory,
+        description: selectedProduct.description || "",
+        price: selectedProduct.price,
+        inventory: selectedProduct.inventory,
+        status: selectedProduct.status as unknown as StatusType,
+        isFeatured: selectedProduct.isFeatured,
+        features: selectedProduct.features.map((f) => ({
+          description: f.description,
+        })),
+      });
+      // console.log("the slected product", selectedProduct)
+    }
+  }, [selectedProduct]);
 
   const handleEditClick = (product: FlattenProductsData) => {
     // todo: fetch product details from the server then set the selected product
@@ -106,8 +163,15 @@ const ProductsTable = () => {
     setIsDialogOpen(true);
   };
 
+  const handleViewClick = (product: FlattenProductsData) => {
+    setSelectedProduct(product);
+    setIsDetailDialogOpen(true);
+  };
+
   // Fetch products data
   const { data: products, isLoading, error: isError } = useProducts();
+  const { data: subCategories, isLoading: SubCategoryLoading, error: subCategoriesError } = useFetchSubCategories();
+  const { data: categories, isLoading: categoryLoading, error: categoriesError } = useFetchCategories();
 
   if (isLoading)
     return <div className="flex justify-center p-6">Loading products...</div>;
@@ -169,6 +233,32 @@ const ProductsTable = () => {
       <ChevronDown className="ml-1 h-4 w-4 inline" />
     );
   };
+
+  const addFeature = () => {
+    setEditValues((v) => ({
+      ...v,
+      features: [...v.features, { description: "" }],
+    }));
+  };
+
+  const updateFeature = (idx: number, val: string) => {
+    setEditValues((v) => ({
+      ...v,
+      features: v.features.map((f, i) =>
+        i === idx ? { description: val } : f
+      ),
+    }));
+  };
+
+  const removeFeature = (idx: number) => {
+    setEditValues((v) => ({
+      ...v,
+      features: v.features.filter((_, i) => i !== idx),
+    }));
+  };
+
+  console.log("edit values", editValues)
+
 
   return (
     <div className="container mx-auto py-6">
@@ -233,7 +323,7 @@ const ProductsTable = () => {
               paginatedData.map((item) => (
                 <TableRow
                   key={item.modelId}
-                  onClick={() => handleRowClick(item)}
+                // onClick={() => handleRowClick(item)}
                 >
                   <TableCell className="font-medium">
                     {item.modelName}
@@ -264,6 +354,9 @@ const ProductsTable = () => {
                           }
                         >
                           Copy model ID
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleViewClick(item)}>
+                          View Details
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => handleAddImagesClick(item)}
@@ -379,17 +472,200 @@ const ProductsTable = () => {
         modelID={selectedProduct?.modelId || ""}
         onClose={() => setIsDialogOpen(false)}
       />
-      {/* <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
+
+      {/* Product Details Dialog */}
+      <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
+        <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>ShadCN Dialog</DialogTitle>
-            <DialogDescription>
-              This dialog opens based on the `isOpened` state.
-            </DialogDescription>
+            <DialogTitle>Product Details</DialogTitle>
+            <DialogDescription>Model: {selectedProduct?.modelName}</DialogDescription>
           </DialogHeader>
-          <Button onClick={() => setIsDialogOpen(false)}>Close</Button>
+
+          <div className="space-y-2">
+            <p><strong>Product:</strong> {selectedProduct?.productName}</p>
+            <p><strong>Category:</strong> {selectedProduct?.category}</p>
+            <p><strong>sub Category:</strong> {selectedProduct?.subCategory}</p>
+            <p><strong>Description:</strong> {selectedProduct?.description}</p>
+            <p><strong>Price:</strong> KSH {(selectedProduct?.price! / 100).toFixed(2)}</p>
+            <p><strong>Status:</strong>{selectedProduct?.status!}</p>
+            <p><strong>Is Featured:</strong> {selectedProduct?.isFeatured.toString()}</p>
+            <p><strong>Inventory:</strong> {selectedProduct?.inventory}</p>
+            {selectedProduct?.features && (
+              <div>
+                <h4 className="font-semibold">Features:</h4>
+                <ul className="list-disc list-inside">
+                  {selectedProduct.features.map((feature, i) => <li key={i}>{feature.description}</li>)}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDetailDialogOpen(false)}>
+              Close
+            </Button>
+            <Button variant="default" onClick={() => { handleEditClick(selectedProduct!); setIsDetailDialogOpen(false); }}>
+              Edit
+            </Button>
+          </DialogFooter>
         </DialogContent>
-      </Dialog> */}
+      </Dialog>
+
+      {/* Edit Product Dialog */}
+      <Dialog open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+        <DialogContent className="max-w-lg max-h-[80dvh]">
+          <DialogHeader>
+            <DialogTitle>Edit Product</DialogTitle>
+            <DialogDescription>Modify product details below</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2 max-h-[27rem] overflow-y-auto">
+            <div>
+              <Label>Model Name</Label>
+              <Input
+                placeholder="Model Name"
+                value={editValues.modelName || ""}
+                onChange={e => setEditValues(v => ({ ...v, modelName: e.target.value }))}
+              />
+            </div>
+            <div>
+              <Label>Product Name</Label>
+              <Input
+                placeholder="Product Name"
+                value={editValues.productName || ""}
+                onChange={e => setEditValues(v => ({ ...v, productName: e.target.value }))}
+              />
+            </div>
+            <div>
+              <Label>Category</Label>
+              {/* <Input
+                placeholder="Category"
+                value={editValues.category || ""}
+                onChange={e => setEditValues(v => ({ ...v, category: e.target.value }))}
+              /> */}
+              <Select name="categoryId" value={editValues.category} defaultValue={editValues.category} onValueChange={val => setEditValues(v => ({ ...v, category: val }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories?.data !== null ? (Object.values(categories?.data ?? {}) as unknown as Category[]).map((sc: Category) => {
+                    return (
+                      <SelectItem key={sc.id} value={sc.name!}>{sc.name}</SelectItem>
+                    )
+                  }) : null}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Sub Category</Label>
+              <Select name="subCategoryId" value={editValues.subCategory} defaultValue={editValues.subCategory} onValueChange={val => setEditValues(v => ({ ...v, subCategory: val }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select subcategory" />
+                </SelectTrigger>
+                <SelectContent>
+                  {subCategories?.data !== null ? (Object.values(subCategories?.data ?? {}) as unknown as Subcategory[]).map((sc: Subcategory) => {
+                    return (
+                      <SelectItem key={sc.id} value={sc.name!}>{sc.name}</SelectItem>
+                    )
+                  }) : null}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Description</Label>
+              <Textarea
+                placeholder="Description"
+                value={editValues.description || ""}
+                onChange={e => setEditValues(v => ({ ...v, description: e.target.value }))}
+              />
+            </div>
+            <div>
+              <Label>Price</Label>
+              <Input
+                placeholder="Price (KSH)"
+                type="number"
+                value={editValues.price !== undefined ? (editValues.price / 100).toString() : ""}
+                onChange={e => setEditValues(v => ({ ...v, price: Math.round(Number(e.target.value) * 100) }))}
+              />
+            </div>
+            <div>
+              <Label>Inventory</Label>
+              <Input
+                placeholder="Inventory"
+                type="number"
+                value={editValues.inventory?.toString() || ""}
+                onChange={e => setEditValues(v => ({ ...v, inventory: Number(e.target.value) }))}
+              />
+            </div>
+            <div>
+              <Label>Status</Label>
+              <Select
+                value={editValues.status}
+                // explicitly type `value` as StatusType:
+                onValueChange={(value: StatusType) =>
+                  setEditValues((v) => ({ ...v, status: value }))
+                }
+              >
+                <SelectTrigger id="status" className="w-full">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="draft">Draft</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>is Featured</Label>
+              <Select
+                value={String(editValues.isFeatured)}
+                onValueChange={(value) =>
+                  setEditValues((v) => ({ ...v, isFeatured: value === "true" }))
+                }
+              >
+                <SelectTrigger id="isFeatured" className="w-full">
+                  <SelectValue placeholder="Select…" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="true">True</SelectItem>
+                  <SelectItem value="false">False</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {Array.isArray(editValues.features) && (
+              <div className="flex flex-col gap-2">
+                <div className="flex flex-row gap-2">
+                  <label className="block text-sm font-medium mb-1">Features</label>
+                  <Button size="sm" variant="destructive" onClick={() => addFeature()}>
+                    Add
+                  </Button>
+                </div>
+                {editValues.features.map((f, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <Textarea
+                      placeholder="Feature description"
+                      value={f.description}
+                      onChange={e => updateFeature(idx, e.target.value)}
+                    />
+                    <Button size="sm" variant="destructive" onClick={() => removeFeature(idx)}>
+                      Remove
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsSheetOpen(false)}>Cancel</Button>
+            <Button
+              variant="default"
+            // onClick={() => updateMutation.mutate({ id: selectedProduct!.modelId, data: editValues })}
+            // disabled={updateMutation.isLoading}
+            >
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

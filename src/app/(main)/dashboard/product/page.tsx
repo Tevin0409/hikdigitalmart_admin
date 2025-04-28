@@ -55,7 +55,7 @@ const Products = (props: pageProps) => {
             <NewProductModal2
               open={isDialogOpen}
               onClose={() => setIsDialogOpen(false)}
-              subCategories={[]}
+              // subCategories={[]}
             />
             <UploadProductsDialog />
           </div>

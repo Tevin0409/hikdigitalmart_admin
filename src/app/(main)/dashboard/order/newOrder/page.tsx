@@ -1,8 +1,12 @@
 
 
 
-export function NewOrder() {
+const NewOrder = () => {
     return(
-        <div></div>
+        <div>
+            
+        </div>
     );
 }
+
+export default NewOrder;

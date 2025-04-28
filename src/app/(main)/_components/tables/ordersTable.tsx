@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, ChevronUp, ChevronDown } from "lucide-react";
+import { MoreHorizontal, ChevronUp, ChevronDown, Eye, Printer } from "lucide-react";
 import { useProducts } from "@/hooks/use-products";
 
 import {
@@ -47,35 +47,33 @@ import {
 import UploadImagesDialog from "../imageUpload";
 import { useOrders } from "@/hooks/use-orders";
 
-const flattenOrdersData = (data: OrdersData) => {
-    const flattenedData: Order[] = [];
-    console.log("provided data", data);
-    if (!data.results) return flattenedData;
 
-    data.results.forEach((order: Order) => {
-        // product.models.forEach((model) => {
-        flattenedData.push({
-            id: order.id,
-            first_name: order.first_name,
-            last_name: order.last_name,
-            email: order.email,
-            orderPrice: order.orderPrice,
-            orderItems: order.orderItems,
-            userId: order.userId,
-            street_address: order.street_address,
-            status: order.status,
-            vat: order.vat,
-            total: order.total,
-            company_name: null,
-            apartment: null,
-            town: order.town,
-            phone_number: order.phone_number,
-            createdAt: order.createdAt,
-            updatedAt: order.updatedAt
-        });
-    });
+const flattenOrdersData = (data?: OrdersData) => {
+    // if there's no data or no `.results` array, we return an empty list
+    if (!data?.results || !Array.isArray(data.results)) {
+        //   console.log("flattenOrdersData got no data, returning []");
+        return [];
+    }
 
-    return flattenedData;
+    return data.results.map((order) => ({
+        id: order.id,
+        first_name: order.first_name,
+        last_name: order.last_name,
+        email: order.email,
+        orderPrice: order.orderPrice,
+        orderItems: order.orderItems,
+        userId: order.userId,
+        street_address: order.street_address,
+        status: order.status,
+        vat: order.vat,
+        total: order.total,
+        company_name: null,
+        apartment: null,
+        town: order.town,
+        phone_number: order.phone_number,
+        createdAt: order.createdAt,
+        updatedAt: order.updatedAt,
+    }));
 };
 
 type SortConfig = {
@@ -92,16 +90,12 @@ const OrdersTable = () => {
         direction: "desc",
     });
 
-    const { data: response, isLoading, isError } = useOrders();
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editedStatus, setEditedStatus] = useState<string>("");
 
-    if (isLoading)
-        return <div className="flex justify-center p-6">Loading orders...</div>;
-    if (isError)
-        return (
-            <div className="flex justify-center p-6 text-red-500">
-                Error loading orders
-            </div>
-        );
+    const { data: response, isLoading, isError } = useOrders();
+    // console.log("response", response, isLoading, isError)
     const orders = flattenOrdersData(response?.data as OrdersData);
 
     const processedOrders = useMemo(() => {
@@ -155,6 +149,15 @@ const OrdersTable = () => {
             <ChevronDown className="ml-1 h-4 w-4 inline" />
         );
     };
+
+    if (isLoading)
+        return <div className="flex justify-center p-6">Loading orders...</div>;
+    if (isError)
+        return (
+            <div className="flex justify-center p-6 text-red-500">
+                Error loading orders
+            </div>
+        );
 
     return (
         <div className="container mx-auto py-6">
@@ -230,9 +233,24 @@ const OrdersTable = () => {
                                         {new Date(order.createdAt).toLocaleDateString()}
                                     </TableCell>
                                     <TableCell>
-                                        <Button variant="ghost" size="icon">
-                                            <MoreHorizontal className="h-4 w-4" />
-                                        </Button>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="ghost" size="icon">
+                                                    <MoreHorizontal className="h-4 w-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                <DropdownMenuItem
+                                                    onSelect={() => {
+                                                        setSelectedOrder(order);
+                                                        setIsModalOpen(true);
+                                                    }}
+                                                >
+                                                    View Order
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
                                     </TableCell>
                                 </TableRow>
                             ))
@@ -284,12 +302,90 @@ const OrdersTable = () => {
                     </PaginationContent>
                 </Pagination>
             </div>
+            
+            {/* Order Details Modal */}
+            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                <DialogContent className="max-w-lg max-h-[70dvh]">
+                    <DialogHeader>
+                        <DialogTitle>Order #{selectedOrder?.id}</DialogTitle>
+                        <DialogDescription>Details and actions for this order</DialogDescription>
+                    </DialogHeader>
 
-            {/* <UploadImagesDialog
-                isOpened={isDialogOpen && selectedProduct !== null}
-                modelID={selectedProduct?.modelId || ""}
-                onClose={() => setIsDialogOpen(false)}
-            /> */}
+                    <div className="space-y-4 p-1 h-[28rem] overflow-y-auto">
+                        <div>
+                            <h3 className="font-semibold">Customer</h3>
+                            <p>{selectedOrder?.first_name} {selectedOrder?.last_name}</p>
+                            <p>{selectedOrder?.email}</p>
+                        </div>
+
+                        <div>
+                            <h3 className="font-semibold">Shipping Address</h3>
+                            <p>{selectedOrder?.street_address}, {selectedOrder?.apartment}</p>
+                            <p>{selectedOrder?.town}</p>
+                            <p>{selectedOrder?.phone_number}</p>
+                        </div>
+
+                        <div>
+                            <h3 className="font-semibold">Items</h3>
+                            <ul className="space-y-2">
+                                {selectedOrder?.orderItems.map((item, idx) => (
+                                    <li key={idx} className="border p-2 rounded">
+                                        <p><strong>Product:</strong> {item.productModel.name}</p>
+                                        <p><strong>Qty:</strong> {item.quantity}</p>
+                                        <p><strong>Price:</strong> KSH {(item.productModel.price / 100).toFixed(2)}</p>
+                                        <p><strong>Total:</strong> KSH {((item.productModel.price * item.quantity) / 100).toFixed(2)}</p>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        <div className="flex justify-between">
+                            <p><strong>Subtotal:</strong> KSH {((selectedOrder?.orderPrice ?? 0) / 100).toFixed(2)}</p>
+                            <p><strong>VAT:</strong> KSH {((selectedOrder?.vat ?? 0) / 100).toFixed(2)}</p>
+                            <p><strong>Total:</strong> KSH {((selectedOrder?.total ?? 0) / 100).toFixed(2)}</p>
+                        </div>
+
+                        <div className="space-y-2">
+                            <h3 className="font-semibold">Status</h3>
+                            <Select value={editedStatus} onValueChange={(val) => setEditedStatus(val)}>
+                                <SelectTrigger className="w-48">
+                                    <SelectValue placeholder="Select status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Awaiting Shipment">Awaiting Shipment</SelectItem>
+                                    <SelectItem value="Awaiting Payment">Awaiting Payment</SelectItem>
+                                    <SelectItem value="Completed">Completed</SelectItem>
+                                    <SelectItem value="Cancelled">Cancelled</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div className="flex gap-2">
+                            {/* <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                    // TODO: Implement print receipt
+                                }}
+                            >
+                                <Printer className="mr-2 h-4 w-4" /> Print Receipt
+                            </Button> */}
+                            <Button
+                                variant="default"
+                                size="sm"
+                                onClick={() => {
+                                    // TODO: Save editedStatus to backend
+                                    setIsModalOpen(false);
+                                }}
+                            >
+                                Save Changes
+                            </Button>
+                        </div>
+
+                    </div>
+
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

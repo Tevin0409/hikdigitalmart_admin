@@ -147,6 +147,8 @@ declare type Model = {
   id?: string;
   productId?: string;
   price: number;
+  status: string;
+  isFeatured: string;
   createdAt?: string;
   updatedAt?: string;
   inventory?: Inventory;
@@ -176,6 +178,9 @@ declare type ProductQueryParams = {
   limit: number;
 };
 
+declare type LowInStockReportParams = {
+  quantity: number
+}
 declare type FlattenProductsData = {
   productId: string;
   productName: string;
@@ -187,6 +192,8 @@ declare type FlattenProductsData = {
   price: number;
   inventory: number;
   features: Feature[];
+  status: string;
+  isFeatured: boolean;
 };
 
 declare type OrderQueryParams = {

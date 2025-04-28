@@ -80,7 +80,7 @@ export const navItems: NavItem[] = [
     items: [
       {
         title: "Manage Users",
-        url: "/dashboard/product",
+        url: "/dashboard/user",
         icon: "employee",
         shortcut: ["p", "p"],
       },
@@ -97,6 +97,20 @@ export const navItems: NavItem[] = [
       //   icon: "product",
       //   shortcut: ["p", "p"],
       // },
+    ], // No child items
+  },
+  {
+    title: "Reports",
+    url: "#",
+    icon: "post",
+    isActive: false,
+    items: [
+      {
+        title: "All Reports",
+        url: "/dashboard/report",
+        icon: "employee",
+        shortcut: ["p", "p"],
+      },
     ], // No child items
   },
 ];
