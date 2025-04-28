@@ -81,3 +81,13 @@ export const addModelInventoryMutation = async (data: object) =>
   await API.post("/product/add-stock", data);
 export const updateModelInventoryMutation = async (data: object) =>
   await API.put("/product/update-stock", data);
+
+// REPORTS
+export const getUserRegistrationsReport = async () => await API.get(`/admin/report/user-registrations`);
+export const getVerifiedUsersReport = async () => await API.get(`/admin/report/verified-users`);
+export const getSalesSummaryReport = async () => await API.get(`/admin/report/sales-summary`);
+export const getOrderStatusReport = async () => await API.get(`/admin/report/order-status`);
+export const getTopProductsReport = async () => await API.get(`/admin/report/top-products`);
+export const getLowInStockReport = async (params: LowInStockReportParams) => await API.get(`/admin/report/low-stock`, { params });
+export const getWishlistsTrendsReport = async () => await API.get(`/admin/report/wishlist-trends`);
+export const getTechnicianRegistrationReport = async () => await API.get(`/admin/report/technician-registrations`);

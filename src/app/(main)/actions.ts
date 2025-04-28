@@ -21,6 +21,14 @@ import {
   getAllSalesQuery,
   createProductMutation,
   getAllUsersQuery,
+  getUserRegistrationsReport,
+  getVerifiedUsersReport,
+  getSalesSummaryReport,
+  getOrderStatusReport,
+  getTopProductsReport,
+  getLowInStockReport,
+  getWishlistsTrendsReport,
+  getTechnicianRegistrationReport,
 } from "@/lib/api";
 import { revalidatePath } from "next/cache";
 import { ProductFormSchema, ProductPayload } from "./_components/newProduct";
@@ -443,6 +451,156 @@ export async function getAllUsers(): Promise<FetchResponse> {
     return {
       success: false,
       message: "Failed to fetch users",
+      data: null,
+    };
+  }
+}
+
+
+/**
+ * Start Admin Reports
+ */
+
+export async function userRegistrationsReport(): Promise<FetchResponse> {
+  try {
+    const res = await getUserRegistrationsReport();
+
+    return {
+      success: true,
+      message: "Users Registration report fetched successfully",
+      data: res.data,
+    };
+  } catch (error) {
+    console.error("Error fetching user registration report:", error);
+    return {
+      success: false,
+      message: "Failed to fetch user registration report",
+      data: null,
+    };
+  }
+}
+export async function verifiedUsersReport(): Promise<FetchResponse> {
+  try {
+    const res = await getVerifiedUsersReport();
+
+    return {
+      success: true,
+      message: "Verified Users report fetched successfully",
+      data: res.data,
+    };
+  } catch (error) {
+    console.error("Error fetching Verified Users report:", error);
+    return {
+      success: false,
+      message: "Failed to fetch Verified Users report",
+      data: null,
+    };
+  }
+}
+export async function salesSummaryReport(): Promise<FetchResponse> {
+  try {
+    const res = await getSalesSummaryReport();
+
+    return {
+      success: true,
+      message: "Sales Summary report fetched successfully",
+      data: res.data,
+    };
+  } catch (error) {
+    console.error("Error fetching Sales Summary report:", error);
+    return {
+      success: false,
+      message: "Failed to fetch Sales Summary report",
+      data: null,
+    };
+  }
+}
+export async function orderStatusReport(): Promise<FetchResponse> {
+  try {
+    const res = await getOrderStatusReport();
+
+    return {
+      success: true,
+      message: "Order Status report fetched successfully",
+      data: res.data,
+    };
+  } catch (error) {
+    console.error("Error fetching Order Status Report:", error);
+    return {
+      success: false,
+      message: "Failed to fetch Order Status Report",
+      data: null,
+    };
+  }
+}
+export async function topProductsReport(): Promise<FetchResponse> {
+  try {
+    const res = await getTopProductsReport();
+
+    return {
+      success: true,
+      message: "Top Products Report fetched successfully",
+      data: res.data,
+    };
+  } catch (error) {
+    console.error("Error fetching Top Products Report:", error);
+    return {
+      success: false,
+      message: "Failed to fetch Top Products Report",
+      data: null,
+    };
+  }
+}
+export async function lowInStockReport(quantity: number): Promise<FetchResponse> {
+  try {
+    const res = await getLowInStockReport({ quantity: quantity });
+
+    return {
+      success: true,
+      message: "Low In Stock Report fetched successfully",
+      data: res.data,
+    };
+  } catch (error) {
+    console.error("Error fetching Low In Stock Report:", error);
+    return {
+      success: false,
+      message: "Failed to fetch Low In Stock Report",
+      data: null,
+    };
+  }
+}
+export async function wishlistsTrendsReport(): Promise<FetchResponse> {
+  try {
+    const res = await getWishlistsTrendsReport();
+
+    return {
+      success: true,
+      message: "Wishlists Trends Report fetched successfully",
+      data: res.data,
+    };
+  } catch (error) {
+    console.error("Error fetching Wishlists Trends Report:", error);
+    return {
+      success: false,
+      message: "Failed to fetch Wishlists Trends Report",
+      data: null,
+    };
+  }
+}
+export async function technicianRegistrationReport(): Promise<FetchResponse> {
+  try {
+    const res = await getTechnicianRegistrationReport();
+
+    return {
+      success: true,
+      message: "Technician Registration Report fetched successfully",
+      data: res.data,
+    };
+  } catch (error) {
+    console.error("Error fetching Technician Registration Report:", error);
+    return {
+      success: false,
+      message: "Failed to fetch Technician Registration Report",
       data: null,
     };
   }

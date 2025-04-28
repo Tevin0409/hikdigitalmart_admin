@@ -178,6 +178,9 @@ declare type ProductQueryParams = {
   limit: number;
 };
 
+declare type LowInStockReportParams = {
+  quantity: number
+}
 declare type FlattenProductsData = {
   productId: string;
   productName: string;

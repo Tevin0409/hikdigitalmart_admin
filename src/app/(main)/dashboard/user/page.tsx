@@ -10,7 +10,6 @@ import { useState } from "react";
 import { useUsers } from "@/hooks/use-users";
 import UploadProductsDialog from "../../_components/bulkupload";
 import { NewProductModal2 } from "../../_components/newProduct";
-import UsersTable from "../../_components/tables/usersTable";
 
 type pageProps = {
   searchParams: Promise<SearchParams>;
@@ -39,14 +38,12 @@ const Users = (props: pageProps) => {
             <NewProductModal2
               open={isDialogOpen}
               onClose={() => setIsDialogOpen(false)}
-              subCategories={[]}
             />
             <UploadProductsDialog />
           </div>
         </div>
         <Separator />
 
-        <UsersTable />
       </div>
     </PageContainer>
   );
