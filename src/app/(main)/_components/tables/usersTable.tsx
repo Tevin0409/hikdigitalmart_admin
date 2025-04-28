@@ -1,5 +1,5 @@
 
-import { useMemo, useState } from "react";
+import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
     Table,
@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, ChevronUp, ChevronDown, Eye, Printer } from "lucide-react";
+import { MoreHorizontal, ChevronUp, ChevronDown } from "lucide-react";
 import { useProducts } from "@/hooks/use-products";
 
 import {
@@ -46,42 +46,31 @@ import {
 } from "@/components/ui/dialog";
 import UploadImagesDialog from "../imageUpload";
 import { useOrders } from "@/hooks/use-orders";
+import { useUsers } from "@/hooks/use-users";
 
+// const flattenOrdersData = (data: UserInfoData) => {
+//     const flattenedData: UserInfoData[] = [];
+//     console.log("provided data", data);
+//     if (!data.results) return flattenedData;
 
-const flattenOrdersData = (data?: OrdersData) => {
-    // if there's no data or no `.results` array, we return an empty list
-    if (!data?.results || !Array.isArray(data.results)) {
-        //   console.log("flattenOrdersData got no data, returning []");
-        return [];
-    }
+//     data.results.forEach((user: UserInfoData) => {
+//         // product.models.forEach((model) => {
+//         flattenedData.push({
+//             firstName: user.firstName,
+//             lastName: user.lastName,
+//             phone_number: user.phoneNumber,
+//         });
+//     });
 
-    return data.results.map((order) => ({
-        id: order.id,
-        first_name: order.first_name,
-        last_name: order.last_name,
-        email: order.email,
-        orderPrice: order.orderPrice,
-        orderItems: order.orderItems,
-        userId: order.userId,
-        street_address: order.street_address,
-        status: order.status,
-        vat: order.vat,
-        total: order.total,
-        company_name: null,
-        apartment: null,
-        town: order.town,
-        phone_number: order.phone_number,
-        createdAt: order.createdAt,
-        updatedAt: order.updatedAt,
-    }));
-};
+//     return flattenedData;
+// };
 
 type SortConfig = {
     key: keyof Order;
     direction: "asc" | "desc";
 };
 
-const OrdersTable = () => {
+const UsersTable = () => {
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
@@ -90,16 +79,23 @@ const OrdersTable = () => {
         direction: "desc",
     });
 
-    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editedStatus, setEditedStatus] = useState<string>("");
+    const { data: response, isLoading, isError } = useUsers();
 
-    const { data: response, isLoading, isError } = useOrders();
-    // console.log("response", response, isLoading, isError)
-    const orders = flattenOrdersData(response?.data as OrdersData);
+    if (isLoading)
+        return <div className="flex justify-center p-6">Loading users...</div>;
+    if (isError)
+        return (
+            <div className="flex justify-center p-6 text-red-500">
+                Error loading users
+            </div>
+        );
+
+        console.log("response data", response)
+    const orders = (response?.data).results;
+    // const orders = flattenOrdersData(response?.data as OrdersData);
 
     const processedOrders = useMemo(() => {
-        let filtered = orders.filter((order) => {
+        let filtered = orders.filter((order: { first_name: string; last_name: string; email: string; company_name: any; }) => {
             const term = searchTerm.toLowerCase();
             return (
                 order.first_name.toLowerCase().includes(term) ||
@@ -109,7 +105,7 @@ const OrdersTable = () => {
             );
         });
 
-        filtered.sort((a, b) => {
+        filtered.sort((a: { [x: string]: any; }, b: { [x: string]: any; }) => {
             const { key, direction } = sortConfig;
             const aValue = a[key];
             const bValue = b[key];
@@ -149,15 +145,6 @@ const OrdersTable = () => {
             <ChevronDown className="ml-1 h-4 w-4 inline" />
         );
     };
-
-    if (isLoading)
-        return <div className="flex justify-center p-6">Loading orders...</div>;
-    if (isError)
-        return (
-            <div className="flex justify-center p-6 text-red-500">
-                Error loading orders
-            </div>
-        );
 
     return (
         <div className="container mx-auto py-6">
@@ -219,7 +206,7 @@ const OrdersTable = () => {
                     </TableHeader>
                     <TableBody>
                         {paginated.length > 0 ? (
-                            paginated.map((order) => (
+                            paginated.map((order: { id: number; first_name: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; last_name: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; email: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; total: number; status: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; createdAt: string | number | Date; }) => (
                                 <TableRow key={order.id}>
                                     <TableCell>{order.id}</TableCell>
                                     <TableCell>{order.first_name}</TableCell>
@@ -233,24 +220,9 @@ const OrdersTable = () => {
                                         {new Date(order.createdAt).toLocaleDateString()}
                                     </TableCell>
                                     <TableCell>
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" size="icon">
-                                                    <MoreHorizontal className="h-4 w-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                <DropdownMenuItem
-                                                    onSelect={() => {
-                                                        setSelectedOrder(order);
-                                                        setIsModalOpen(true);
-                                                    }}
-                                                >
-                                                    View Order
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
+                                        <Button variant="ghost" size="icon">
+                                            <MoreHorizontal className="h-4 w-4" />
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             ))
@@ -302,92 +274,14 @@ const OrdersTable = () => {
                     </PaginationContent>
                 </Pagination>
             </div>
-            
-            {/* Order Details Modal */}
-            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                <DialogContent className="max-w-lg max-h-[70dvh]">
-                    <DialogHeader>
-                        <DialogTitle>Order #{selectedOrder?.id}</DialogTitle>
-                        <DialogDescription>Details and actions for this order</DialogDescription>
-                    </DialogHeader>
 
-                    <div className="space-y-4 p-1 h-[28rem] overflow-y-auto">
-                        <div>
-                            <h3 className="font-semibold">Customer</h3>
-                            <p>{selectedOrder?.first_name} {selectedOrder?.last_name}</p>
-                            <p>{selectedOrder?.email}</p>
-                        </div>
-
-                        <div>
-                            <h3 className="font-semibold">Shipping Address</h3>
-                            <p>{selectedOrder?.street_address}, {selectedOrder?.apartment}</p>
-                            <p>{selectedOrder?.town}</p>
-                            <p>{selectedOrder?.phone_number}</p>
-                        </div>
-
-                        <div>
-                            <h3 className="font-semibold">Items</h3>
-                            <ul className="space-y-2">
-                                {selectedOrder?.orderItems.map((item, idx) => (
-                                    <li key={idx} className="border p-2 rounded">
-                                        <p><strong>Product:</strong> {item.productModel.name}</p>
-                                        <p><strong>Qty:</strong> {item.quantity}</p>
-                                        <p><strong>Price:</strong> KSH {(item.productModel.price / 100).toFixed(2)}</p>
-                                        <p><strong>Total:</strong> KSH {((item.productModel.price * item.quantity) / 100).toFixed(2)}</p>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div className="flex justify-between">
-                            <p><strong>Subtotal:</strong> KSH {((selectedOrder?.orderPrice ?? 0) / 100).toFixed(2)}</p>
-                            <p><strong>VAT:</strong> KSH {((selectedOrder?.vat ?? 0) / 100).toFixed(2)}</p>
-                            <p><strong>Total:</strong> KSH {((selectedOrder?.total ?? 0) / 100).toFixed(2)}</p>
-                        </div>
-
-                        <div className="space-y-2">
-                            <h3 className="font-semibold">Status</h3>
-                            <Select value={editedStatus} onValueChange={(val) => setEditedStatus(val)}>
-                                <SelectTrigger className="w-48">
-                                    <SelectValue placeholder="Select status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="Awaiting Shipment">Awaiting Shipment</SelectItem>
-                                    <SelectItem value="Awaiting Payment">Awaiting Payment</SelectItem>
-                                    <SelectItem value="Completed">Completed</SelectItem>
-                                    <SelectItem value="Cancelled">Cancelled</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        <div className="flex gap-2">
-                            {/* <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                    // TODO: Implement print receipt
-                                }}
-                            >
-                                <Printer className="mr-2 h-4 w-4" /> Print Receipt
-                            </Button> */}
-                            <Button
-                                variant="default"
-                                size="sm"
-                                onClick={() => {
-                                    // TODO: Save editedStatus to backend
-                                    setIsModalOpen(false);
-                                }}
-                            >
-                                Save Changes
-                            </Button>
-                        </div>
-
-                    </div>
-
-                </DialogContent>
-            </Dialog>
+            {/* <UploadImagesDialog
+                isOpened={isDialogOpen && selectedProduct !== null}
+                modelID={selectedProduct?.modelId || ""}
+                onClose={() => setIsDialogOpen(false)}
+            /> */}
         </div>
     );
 };
 
-export default OrdersTable;
+export default UsersTable;

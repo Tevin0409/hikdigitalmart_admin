@@ -3,13 +3,13 @@ import type { NextRequest } from "next/server";
 import { updateSession, decrypt } from "@/lib/session";
 import { refreshAccessToken } from "./app/(auth)/actions";
 
-// const protectedRoutes = ["/dashboard", "/dashboard/"];
+const protectedRoutes = ["/dashboard", "/dashboard/"];
 
 export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
-  // const isProtectedRoute = protectedRoutes.some((route) =>
-  //   path.startsWith(route)
-  // );
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    path.startsWith(route)
+  );
   const sessionCookie = req.cookies.get("session")?.value;
   const refreshToken = req.cookies.get("refresh_token")?.value;
   const accessToken = req.cookies.get("access_token")?.value;
@@ -25,9 +25,9 @@ export async function middleware(req: NextRequest) {
     (session as SessionPayload)?.expiresAt &&
     new Date((session as SessionPayload).expiresAt) < new Date();
 
-  // if (isProtectedRoute && (!session?.userId || !accessToken)) {
-  //   return NextResponse.redirect(new URL("/", req.url));
-  // }
+  if (isProtectedRoute && (!session?.userId || !accessToken)) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
 
   if (isSessionExpired && refreshToken) {
     try {

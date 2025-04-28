@@ -33,6 +33,7 @@ import { createProduct } from "../actions";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useFetchSubCategories } from "@/hooks/use-categories";
 // import { Product } from '../../../constants/data';
 
 export default function NewProductModal({
@@ -264,7 +265,7 @@ export interface ProductFormState {
   models: ModelInput[]
 }
 
-export function NewProductModal2({ open, onClose, subCategories }: { open: boolean; onClose: () => void; subCategories: Subcategory[] }) {
+export function NewProductModal2({ open, onClose }: { open: boolean; onClose: () => void; }) {
   const router = useRouter()
   const [data, setData] = useState<ProductFormState>({
     name: '',
@@ -272,6 +273,10 @@ export function NewProductModal2({ open, onClose, subCategories }: { open: boole
     defaultPrice: 0,
     models: [],
   })
+
+  const { data: subCategories, isLoading, error } = useFetchSubCategories();
+
+  // console.log("subcategories", subCategories);
 
   const [state, dispatch, isPending] = useActionState(
     async (prev: ActionResponse, formData: FormData) => createProduct(prev, formData),
@@ -326,6 +331,9 @@ export function NewProductModal2({ open, onClose, subCategories }: { open: boole
     setData({ ...data, models: data.models.filter((_, i) => i !== idx) })
   }
 
+  if (isLoading) return <p>Loading subCategories...</p>;
+  if (error) return <p>Error fetching subCategories</p>;
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-3xl p-6 space-y-4 overflow-y-auto max-h-[70dvh]">
@@ -347,7 +355,14 @@ export function NewProductModal2({ open, onClose, subCategories }: { open: boole
             <Select name="subCategoryId" value={data.subCategoryId} onValueChange={val => setData({ ...data, subCategoryId: val })}>
               <SelectTrigger><SelectValue placeholder="Select subcategory" /></SelectTrigger>
               <SelectContent>
-                {subCategories.map(sc => <SelectItem key={sc.id} value={sc.id!}>{sc.name}</SelectItem>)}
+                {/* {(subCategories?.data as Subcategory[])?.map((sc: Subcategory) => {
+                  <SelectItem key={sc.id} value={sc.id!}>{sc.name}</SelectItem>
+                })} */}
+                {subCategories?.data !== null ? (Object.values(subCategories?.data ?? {}) as unknown as Subcategory[]).map((sc: Subcategory) => {
+                  return (
+                    <SelectItem key={sc.id} value={sc.id!}>{sc.name}</SelectItem>
+                  )
+                }) : null}
               </SelectContent>
             </Select>
           </div>
@@ -384,8 +399,8 @@ export function NewProductModal2({ open, onClose, subCategories }: { open: boole
           ))}
 
           <div className="flex flex-row gap-2">
-          <Button type="button" onClick={handleAddModel}>Add Model</Button>
-          <Button type="submit" disabled={isPending}>Create Product</Button>
+            <Button type="button" onClick={handleAddModel}>Add Model</Button>
+            <Button type="submit" disabled={isPending}>Create Product</Button>
           </div>
         </form>
       </DialogContent>
