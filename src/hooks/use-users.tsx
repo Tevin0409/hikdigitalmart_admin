@@ -1,13 +1,36 @@
 "use client";
 
-import { getAllUsers } from "@/app/(main)/actions";
+import { getAllRolesAction, getAllUsers } from "@/app/(main)/actions";
 import { useQuery } from "@tanstack/react-query";
 
-export function useUsers() {    
+export function useUsers({
+  page = 1,
+  limit = 10,
+  searchTerm = "",
+  roleId = "",
+}: {
+  page: number;
+  limit: number;
+  searchTerm?: string;
+  roleId?: string;
+}) {
   return useQuery({
-    queryKey: ["users"], // Key includes pagination to prevent stale cache
-    queryFn: () => getAllUsers(),
-    staleTime: 0, // Always fetch fresh data
-    retry: 2, // Retry twice if request fails
+    queryKey: ["users", { page, limit, searchTerm, roleId }],
+    queryFn: () =>
+      getAllUsers({
+        page,
+        limit,
+        searchTerm,
+        roleId,
+      }),
   });
 }
+
+export const useUsersRoles = () => {
+  return useQuery({
+    queryKey: ["users"],
+    queryFn: () => getAllRolesAction(),
+    staleTime: 0,
+    retry: 2,
+  });
+};

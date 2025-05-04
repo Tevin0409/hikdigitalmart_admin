@@ -34,8 +34,22 @@ export const getDashboardSummaryQuery = async () =>
   await API.get("/admin/dashboard");
 
 // USERS
-export const getAllUsersQuery = async () =>
-  await API.get("/admin/user/get-all-users");
+
+export const getAllUsersQuery = async (params: GetAllUsersParams = {}) => {
+  const { page = 1, limit = 10, searchTerm, roleId } = params;
+
+  const query = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+    ...(searchTerm ? { searchTerm } : {}),
+    ...(roleId ? { roleId } : {}),
+  }).toString();
+
+  return await API.get(`/admin/user/get-all-users?${query}`);
+};
+
+export const getAllRoles = async () => await API.get(`admin/role`);
+
 export const getUserByIdQuery = async (id: string) =>
   await API.get(`/user/get-user/${id}`);
 export const getUserByEmailQuery = async (email: string) =>
@@ -83,11 +97,19 @@ export const updateModelInventoryMutation = async (data: object) =>
   await API.put("/product/update-stock", data);
 
 // REPORTS
-export const getUserRegistrationsReport = async () => await API.get(`/admin/report/user-registrations`);
-export const getVerifiedUsersReport = async () => await API.get(`/admin/report/verified-users`);
-export const getSalesSummaryReport = async () => await API.get(`/admin/report/sales-summary`);
-export const getOrderStatusReport = async () => await API.get(`/admin/report/order-status`);
-export const getTopProductsReport = async () => await API.get(`/admin/report/top-products`);
-export const getLowInStockReport = async (params: LowInStockReportParams) => await API.get(`/admin/report/low-stock`, { params });
-export const getWishlistsTrendsReport = async () => await API.get(`/admin/report/wishlist-trends`);
-export const getTechnicianRegistrationReport = async () => await API.get(`/admin/report/technician-registrations`);
+export const getUserRegistrationsReport = async () =>
+  await API.get(`/admin/report/user-registrations`);
+export const getVerifiedUsersReport = async () =>
+  await API.get(`/admin/report/verified-users`);
+export const getSalesSummaryReport = async () =>
+  await API.get(`/admin/report/sales-summary`);
+export const getOrderStatusReport = async () =>
+  await API.get(`/admin/report/order-status`);
+export const getTopProductsReport = async () =>
+  await API.get(`/admin/report/top-products`);
+export const getLowInStockReport = async (params: LowInStockReportParams) =>
+  await API.get(`/admin/report/low-stock`, { params });
+export const getWishlistsTrendsReport = async () =>
+  await API.get(`/admin/report/wishlist-trends`);
+export const getTechnicianRegistrationReport = async () =>
+  await API.get(`/admin/report/technician-registrations`);

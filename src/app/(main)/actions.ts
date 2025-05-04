@@ -29,6 +29,7 @@ import {
   getLowInStockReport,
   getWishlistsTrendsReport,
   getTechnicianRegistrationReport,
+  getAllRoles,
 } from "@/lib/api";
 import { revalidatePath } from "next/cache";
 import { ProductFormSchema, ProductPayload } from "./_components/newProduct";
@@ -176,7 +177,7 @@ export async function createCategory(
     }
 
     const categoryResponse = await createCategoryMutation(validatedData.data);
-    console.log(categoryResponse);
+    // // console.log(categoryResponse);
 
     return {
       success: true,
@@ -201,7 +202,7 @@ export async function bulkUploadProducts(
 ): Promise<ActionResponse> {
   try {
     const response = await bulkUploadProductsMutation(formData);
-    console.log("res", response);
+    // // console.log("res", response);
 
     return {
       success: true,
@@ -230,7 +231,7 @@ export async function uploadProductImages(
 ): Promise<ActionResponse> {
   try {
     const response = await uploadProductImagesMutation(formData);
-    console.log("res", response);
+    // // console.log("res", response);
 
     return {
       success: true,
@@ -263,7 +264,7 @@ export async function getProducts(
       page,
       limit,
     });
-    console.log("res", res.data);
+    // // console.log("res", res.data);
     return {
       success: true,
       message: "Products fetched successfully",
@@ -284,42 +285,50 @@ export async function createProduct(
   formData: FormData
 ): Promise<ActionResponse> {
   try {
-    const name = formData.get("name") as string
-    const subCategoryId = formData.get("subCategoryId") as string
-    const defaultPrice = parseFloat(formData.get("defaultPrice") as string)
-    const models = JSON.parse(formData.get("models") as string) as ProductPayload['productData']['models']
+    const name = formData.get("name") as string;
+    const subCategoryId = formData.get("subCategoryId") as string;
+    const defaultPrice = parseFloat(formData.get("defaultPrice") as string);
+    const models = JSON.parse(
+      formData.get("models") as string
+    ) as ProductPayload["productData"]["models"];
 
-    const rawPayload: ProductPayload = { productData: { name, subCategoryId, defaultPrice, models } }
+    const rawPayload: ProductPayload = {
+      productData: { name, subCategoryId, defaultPrice, models },
+    };
 
-    const parsed = ProductFormSchema.safeParse(rawPayload)
+    const parsed = ProductFormSchema.safeParse(rawPayload);
     if (!parsed.success) {
       // Convert formData to a simpler record for displaying errors
-      const entries = Object.fromEntries(formData.entries())
+      const entries = Object.fromEntries(formData.entries());
       return {
         success: false,
         message: "Please fix the errors in the form",
         inputs: entries,
         errors: parsed.error.flatten().fieldErrors,
-      }
+      };
     }
 
-    await createProductMutation(parsed.data)
+    await createProductMutation(parsed.data);
     // On success, preserve simple record
-    const entries = Object.fromEntries(formData.entries())
-    return { success: true, message: "Product created successfully", inputs: entries }
+    const entries = Object.fromEntries(formData.entries());
+    return {
+      success: true,
+      message: "Product created successfully",
+      inputs: entries,
+    };
   } catch (error) {
     return {
       success: false,
       message: (error as Error).message || "An unexpected error occurred",
       inputs: prevState.inputs,
-    }
+    };
   }
 }
 
 export async function getCategories(): Promise<FetchResponse> {
   try {
     const res = await getAllCategoriesQuery();
-    console.log("res", res.data);
+    // console.log("res", res.data);
     return {
       success: true,
       message: "Categories fetched successfully",
@@ -337,7 +346,7 @@ export async function getCategories(): Promise<FetchResponse> {
 export async function getSubCategories(): Promise<FetchResponse> {
   try {
     const res = await getAllSubcategoriesQuery();
-    console.log("res", res.data);
+    // // console.log("res", res.data);
     return {
       success: true,
       message: "Sub Categories fetched successfully",
@@ -381,7 +390,7 @@ export async function createSubCategory(
     const subCategoryResponse = await createSubcategoryMutation(
       validatedData.data
     );
-    console.log(subCategoryResponse);
+    // console.log(subCategoryResponse);
 
     return {
       success: true,
@@ -432,14 +441,28 @@ export async function getAllOrders(
  * End Orders Actions
  */
 
-
 /**
  * Start Admin User Actions
  */
-export async function getAllUsers(): Promise<FetchResponse> {
+
+export async function getAllUsers({
+  page = 1,
+  limit = 10,
+  searchTerm,
+  roleId,
+}: {
+  page: number;
+  limit: number;
+  searchTerm?: string;
+  roleId?: string;
+}): Promise<FetchResponse> {
   try {
-    // Replace this with your actual API call
-    const res = await getAllUsersQuery();
+    const res = await getAllUsersQuery({
+      page,
+      limit,
+      searchTerm,
+      roleId,
+    });
 
     return {
       success: true,
@@ -455,7 +478,6 @@ export async function getAllUsers(): Promise<FetchResponse> {
     };
   }
 }
-
 
 /**
  * Start Admin Reports
@@ -551,7 +573,9 @@ export async function topProductsReport(): Promise<FetchResponse> {
     };
   }
 }
-export async function lowInStockReport(quantity: number): Promise<FetchResponse> {
+export async function lowInStockReport(
+  quantity: number
+): Promise<FetchResponse> {
   try {
     const res = await getLowInStockReport({ quantity: quantity });
 
@@ -601,6 +625,24 @@ export async function technicianRegistrationReport(): Promise<FetchResponse> {
     return {
       success: false,
       message: "Failed to fetch Technician Registration Report",
+      data: null,
+    };
+  }
+}
+
+export async function getAllRolesAction(): Promise<FetchResponse> {
+  try {
+    const res = await getAllRoles();
+
+    return {
+      success: true,
+      message: "Roles fetched successfully",
+      data: res.data,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Failed to user roles",
       data: null,
     };
   }

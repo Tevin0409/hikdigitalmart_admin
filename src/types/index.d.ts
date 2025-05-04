@@ -27,7 +27,7 @@ declare type ActionResponse = {
 type FetchResponse<T = unknown> = {
   success: boolean;
   message: string;
-  data?: T;
+  data: PaginatedUsers | T | Roles[];
 };
 declare type AddressFormData = {
   streetAddress: string;
@@ -179,8 +179,8 @@ declare type ProductQueryParams = {
 };
 
 declare type LowInStockReportParams = {
-  quantity: number
-}
+  quantity: number;
+};
 declare type FlattenProductsData = {
   productId: string;
   productName: string;
@@ -282,3 +282,63 @@ declare type SummaryData = {
 };
 
 declare type DurationKey = "monthly" | "weekly" | "yearly";
+
+declare type GetAllUsersParams = {
+  page?: number;
+  limit?: number;
+  searchTerm?: string;
+  roleId?: string;
+};
+
+declare type PaginatedUsers = {
+  page: number;
+  limit: number;
+  totalPages: number;
+  totalResults: number;
+  results: User[];
+};
+
+declare type Roles = {
+  id: string;
+  name: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+declare type Role = {
+  id: string;
+  name: string;
+};
+
+declare type User = {
+  id: string;
+  phoneNumber: string | null;
+  email: string;
+  firstName: string;
+  lastName: string;
+  isVerified: boolean;
+  technicianVerified: boolean;
+  shopOwnerVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
+  role: Role;
+  permissions: any[];
+};
+
+declare type UserTableProps = {
+  users: {
+    page: number;
+    limit: number;
+    totalPages: number;
+    totalResults: number;
+    results: User[];
+  };
+  currentPage: number;
+  onPageChange: (page: number) => void;
+  searchTerm: string;
+  onSearchTermChange: (search: string) => void;
+  roles: Role[];
+  selectedRoleId: string;
+  onRoleChange: (roleId: string) => void;
+};
