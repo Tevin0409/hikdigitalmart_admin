@@ -12,44 +12,6 @@ import {
 import SmartPagination from "@/components/ui/smartPagination";
 import { useEffect, useState, memo } from "react";
 
-interface Role {
-  id: string;
-  name: string;
-}
-
-interface User {
-  id: string;
-  phoneNumber: string | null;
-  email: string;
-  firstName: string;
-  lastName: string;
-  isVerified: boolean;
-  technicianVerified: boolean;
-  shopOwnerVerified: boolean;
-  createdAt: string;
-  updatedAt: string;
-  role: Role;
-  permissions: any[];
-}
-
-interface UserTableProps {
-  users: {
-    page: number;
-    limit: number;
-    totalPages: number;
-    totalResults: number;
-    results: User[];
-  };
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-  searchTerm: string;
-  onSearchTermChange: (search: string) => void;
-  roles: Role[];
-  selectedRoleId: string;
-  onRoleChange: (roleId: string) => void;
-  isLoading?: boolean;
-}
 
 // Custom hook for debouncing
 function useDebounce<T>(value: T, delay?: number): T {

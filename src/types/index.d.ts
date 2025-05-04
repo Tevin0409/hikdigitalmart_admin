@@ -341,10 +341,12 @@ declare type UserTableProps = {
     results: User[];
   };
   currentPage: number;
+  totalPages: number;
   onPageChange: (page: number) => void;
   searchTerm: string;
   onSearchTermChange: (search: string) => void;
   roles: Role[];
   selectedRoleId: string;
   onRoleChange: (roleId: string) => void;
+  isLoading?: boolean;
 };

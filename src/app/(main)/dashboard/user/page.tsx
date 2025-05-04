@@ -67,7 +67,15 @@ const Users = () => {
     URL.revokeObjectURL(url);
   };
 
-  if (isLoading) return <p>Loading users...</p>;
+  if (isLoading) return;
+  // return (
+  //   <div className="min-h-screen flex items-center justify-center bg-gray-100">
+  //     <div className="text-center">
+  //       <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#0991B2] mx-auto"></div>
+  //       <p className="mt-4 text-xl text-gray-700">Loading users...</p>
+  //     </div>
+  //   </div>
+  // );
   if (error || !data?.data)
     return <p>Error fetching Users or no data available</p>;
 
