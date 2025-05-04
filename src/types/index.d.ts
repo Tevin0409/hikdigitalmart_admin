@@ -27,7 +27,7 @@ declare type ActionResponse = {
 type FetchResponse<T = unknown> = {
   success: boolean;
   message: string;
-  data: PaginatedUsers | T | Roles[];
+  data: PaginatedUsers | T | Roles[] | any;
 };
 declare type AddressFormData = {
   streetAddress: string;
