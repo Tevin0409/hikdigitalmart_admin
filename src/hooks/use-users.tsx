@@ -8,14 +8,16 @@ export function useUsers({
   limit = 10,
   searchTerm = "",
   roleId = "",
+  refreshTrigger = 0, 
 }: {
   page: number;
   limit: number;
   searchTerm?: string;
   roleId?: string;
+  refreshTrigger?: number; 
 }) {
   return useQuery({
-    queryKey: ["users", { page, limit, searchTerm, roleId }],
+    queryKey: ["users", { page, limit, searchTerm, roleId, refreshTrigger }], 
     queryFn: () =>
       getAllUsers({
         page,
