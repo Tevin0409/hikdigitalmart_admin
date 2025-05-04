@@ -148,30 +148,32 @@ export default function UserTable({
   return (
     <div className="w-full space-y-4">
       <div className="flex items-center justify-between gap-4">
-        <div className="relative w-64">
-          <Search className="absolute left-2 top-3 h-4 w-4 text-gray-400" />
-          <Input
-            placeholder="Search users..."
-            value={localSearchTerm}
-            onChange={(e) => setLocalSearchTerm(e.target.value)}
-            className="pl-8"
-          />
+        <div className="flex items-center gap-4 flex-1">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search users by name, email, or phone..."
+              value={localSearchTerm}
+              onChange={(e) => setLocalSearchTerm(e.target.value)}
+              className="pl-10 pr-4 py-2 rounded-lg bg-background"
+            />
+          </div>
         </div>
-        <Select value={selectedRoleId} onValueChange={onRoleChange}>
-          <SelectTrigger className="w-48">
-            <SelectValue placeholder="Filter by role" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="ALL">All Roles</SelectItem>
-            {roles.map((role) => (
-              <SelectItem key={role.id} value={role.id}>
-                {role.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <div className="text-sm text-gray-500">
-          {users.totalResults} users total
+        
+        <div className="flex items-center gap-4">
+          <Select value={selectedRoleId} onValueChange={onRoleChange}>
+            <SelectTrigger className="w-[180px] rounded-lg bg-background">
+              <SelectValue placeholder="Filter by role" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">All Roles</SelectItem>
+              {roles.map((role) => (
+                <SelectItem key={role.id} value={role.id}>
+                  {role.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
@@ -226,7 +228,10 @@ export default function UserTable({
         )}
       </div>
 
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-between">
+        <div className="text-sm text-muted-foreground">
+          {users.totalResults} {users.totalResults === 1 ? 'user' : 'users'} total
+        </div>
         {totalPages > 1 && (
           <SmartPagination
             currentPage={currentPage}
@@ -239,6 +244,7 @@ export default function UserTable({
           />
         )}
       </div>
+
     </div>
   );
 }
