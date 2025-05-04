@@ -22,7 +22,7 @@ export const useVerifiedUserReport = () => {
 
 export const useSalesSummaryReport = () => {
     return useQuery({
-        queryKey: ["verified-user-report"],
+        queryKey: ["sales-summary-report"],
         queryFn: () => salesSummaryReport(),
         staleTime: 0,
         retry: 2,
@@ -31,7 +31,7 @@ export const useSalesSummaryReport = () => {
 
 export const useOrderStatusReport = () => {
     return useQuery({
-        queryKey: ["verified-user-report"],
+        queryKey: ["order-status-report"],
         queryFn: () => orderStatusReport(),
         staleTime: 0,
         retry: 2,
@@ -40,16 +40,16 @@ export const useOrderStatusReport = () => {
 
 export const useTopProductsReport = () => {
     return useQuery({
-        queryKey: ["verified-user-report"],
+        queryKey: ["top-products-report"],
         queryFn: () => topProductsReport(),
         staleTime: 0,
         retry: 2,
     });
 };
 
-export const uselowInStockReport = (quantity = 10) => {
+export const uselowInStockReport = (quantity = 100) => {
     return useQuery({
-        queryKey: ["verified-user-report"],
+        queryKey: ["low-in-stock-report", quantity],
         queryFn: () => lowInStockReport(quantity),
         staleTime: 0,
         retry: 2,
@@ -58,7 +58,7 @@ export const uselowInStockReport = (quantity = 10) => {
 
 export const useWishlistsTrendsReport = () => {
     return useQuery({
-        queryKey: ["verified-user-report"],
+        queryKey: ["wishlists-trends-report"],
         queryFn: () => wishlistsTrendsReport(),
         staleTime: 0,
         retry: 2,
@@ -67,9 +67,10 @@ export const useWishlistsTrendsReport = () => {
 
 export const usetechnicianRegistrationReport = () => {
     return useQuery({
-        queryKey: ["verified-user-report"],
+        queryKey: ["technician-registration-report"],
         queryFn: () => technicianRegistrationReport(),
         staleTime: 0,
         retry: 2,
     });
 };
+
