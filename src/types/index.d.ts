@@ -78,6 +78,7 @@ declare type UserInfoData = {
   firstName: string;
   lastName: string;
   phoneNumber: string;
+  roleId?: string;
 };
 
 declare type SessionPayload = {
@@ -328,6 +329,7 @@ declare type User = {
   shopOwnerVerified: boolean;
   createdAt: string;
   updatedAt: string;
+  roleId?:string
   role: Role;
   permissions: any[];
 };
@@ -349,4 +351,5 @@ declare type UserTableProps = {
   selectedRoleId: string;
   onRoleChange: (roleId: string) => void;
   isLoading?: boolean;
+  onEdit: (user: User) => void;
 };

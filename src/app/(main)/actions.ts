@@ -30,6 +30,7 @@ import {
   getWishlistsTrendsReport,
   getTechnicianRegistrationReport,
   getAllRoles,
+  registerMutation,
 } from "@/lib/api";
 import { revalidatePath } from "next/cache";
 import { ProductFormSchema, ProductPayload } from "./_components/newProduct";
@@ -643,6 +644,47 @@ export async function getAllRolesAction(): Promise<UsersFetchResponse> {
     return {
       success: false,
       message: "Failed to user roles",
+      data: null,
+    };
+  }
+}
+
+export async function createUserAction(
+  data: RegisterData
+): Promise<UsersFetchResponse> {
+  try {
+    const res = await registerMutation(data);
+
+    return {
+      success: true,
+      message: "User created successfully",
+      data: res.data,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Failed to create user",
+      data: null,
+    };
+  }
+}
+
+export async function updateUserAction(
+  id: string,
+  data: UserInfoData
+): Promise<UsersFetchResponse> {
+  try {
+    const res = await changeUserInfoMutation(id, data);
+
+    return {
+      success: true,
+      message: "User updated successfully",
+      data: res.data,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Failed to update user",
       data: null,
     };
   }

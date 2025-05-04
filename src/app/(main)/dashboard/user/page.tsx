@@ -5,9 +5,16 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { Plus, RefreshCw, Download } from "lucide-react";
 import { useState } from "react";
-import { useUsers, useUsersRoles } from "@/hooks/use-users";
+import {
+  useCreateUser,
+  useUpdateUser,
+  useUsers,
+  useUsersRoles,
+} from "@/hooks/use-users";
 import { NewProductModal2 } from "../../_components/newProduct";
 import UserTable from "../../_components/tables/usersTable";
+import { UserDialog } from "../../_components/tables/addUserDialog";
+import { toast } from "sonner";
 
 const Users = () => {
   const [page, setPage] = useState(1);
@@ -15,6 +22,7 @@ const Users = () => {
   const [selectedRoleId, setSelectedRoleId] = useState("ALL"); // "ALL" by default
   const limit = 10;
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [editUser, setEditUser] = useState<any | null>(null);
 
   const { data, isLoading, error, refetch } = useUsers({
     page,
@@ -31,10 +39,36 @@ const Users = () => {
   } = useUsersRoles();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const createUser = useCreateUser();
+  const updateUser = useUpdateUser();
+
+  const handleSubmit = async (values: any) => {
+    if (editUser) {
+      // EDIT MODE
+      const result = await updateUser.mutateAsync({
+        id: editUser.id as string,
+        data: values,
+      });
+      if (result?.success) {
+        toast.success(result.message || "User updated successfully");
+      } else {
+        toast.error(result?.message || "Failed to update user");
+      }
+      setEditUser(null); // Clear after editing
+    } else {
+      // ADD MODE
+      const result = await createUser.mutateAsync(values);
+      if (result.success) {
+        toast.success(result.message || "User created successfully");
+      } else {
+        toast.error(result.message || "Failed to create user");
+      }
+    }
+  };
 
   const handleRefresh = () => {
-    setRefreshTrigger((prev) => prev + 1); // Increment to trigger refetch
-    refetch(); // Use refetch function from React Query
+    setRefreshTrigger((prev) => prev + 1);
+    refetch();
   };
 
   const handleExport = () => {
@@ -111,27 +145,40 @@ const Users = () => {
               <Plus className="mr-2 h-4 w-4" />
               Add User
             </Button>
-            <NewProductModal2
+            <UserDialog
               open={isDialogOpen}
-              onClose={() => setIsDialogOpen(false)}
+              onOpenChange={(open) => {
+                if (!open) {
+                  setEditUser(null); // Reset when closing
+                }
+                setIsDialogOpen(open);
+              }}
+              onSubmit={handleSubmit}
+              mode={editUser ? "edit" : "add"}
+              initialData={editUser}
             />
           </div>
         </div>
         <Separator />
         <UserTable
-          users={usersData}
-          currentPage={page}
-          totalPages={usersData.totalPages}
-          onPageChange={setPage}
-          searchTerm={searchTerm}
-          onSearchTermChange={setSearchTerm}
-          roles={(roles?.data as Roles[]) ?? []}
-          selectedRoleId={selectedRoleId}
-          onRoleChange={(roleId) => {
-            setSelectedRoleId(roleId);
-            setPage(1); // Reset page when changing role
-          }}
-        />
+  users={usersData}
+  currentPage={page}
+  totalPages={usersData.totalPages}
+  onPageChange={setPage}
+  searchTerm={searchTerm}
+  onSearchTermChange={setSearchTerm}
+  roles={(roles?.data as Roles[]) ?? []}
+  selectedRoleId={selectedRoleId}
+  onRoleChange={(roleId) => {
+    setSelectedRoleId(roleId);
+    setPage(1);
+  }}
+  onEdit={(user) => {
+    setEditUser(user);
+    setIsDialogOpen(true);
+  }}
+/>
+
       </div>
     </PageContainer>
   );
