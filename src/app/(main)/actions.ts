@@ -455,7 +455,7 @@ export async function getAllUsers({
   limit: number;
   searchTerm?: string;
   roleId?: string;
-}): Promise<FetchResponse> {
+}): Promise<UsersFetchResponse> {
   try {
     const res = await getAllUsersQuery({
       page,
@@ -630,7 +630,7 @@ export async function technicianRegistrationReport(): Promise<FetchResponse> {
   }
 }
 
-export async function getAllRolesAction(): Promise<FetchResponse> {
+export async function getAllRolesAction(): Promise<UsersFetchResponse> {
   try {
     const res = await getAllRoles();
 
