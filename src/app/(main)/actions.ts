@@ -484,7 +484,7 @@ export async function getAllUsers({
  * Start Admin Reports
  */
 
-export async function userRegistrationsReport(): Promise<FetchResponse> {
+export async function userRegistrationsReport(): Promise<ReportsFetchResponse> {
   try {
     const res = await getUserRegistrationsReport();
 
@@ -502,7 +502,7 @@ export async function userRegistrationsReport(): Promise<FetchResponse> {
     };
   }
 }
-export async function verifiedUsersReport(): Promise<FetchResponse> {
+export async function verifiedUsersReport(): Promise<ReportsFetchResponse> {
   try {
     const res = await getVerifiedUsersReport();
 
@@ -520,7 +520,7 @@ export async function verifiedUsersReport(): Promise<FetchResponse> {
     };
   }
 }
-export async function salesSummaryReport(): Promise<FetchResponse> {
+export async function salesSummaryReport(): Promise<ReportsFetchResponse> {
   try {
     const res = await getSalesSummaryReport();
 
@@ -538,7 +538,7 @@ export async function salesSummaryReport(): Promise<FetchResponse> {
     };
   }
 }
-export async function orderStatusReport(): Promise<FetchResponse> {
+export async function orderStatusReport(): Promise<ReportsFetchResponse> {
   try {
     const res = await getOrderStatusReport();
 
@@ -556,7 +556,7 @@ export async function orderStatusReport(): Promise<FetchResponse> {
     };
   }
 }
-export async function topProductsReport(): Promise<FetchResponse> {
+export async function topProductsReport(): Promise<ReportsFetchResponse> {
   try {
     const res = await getTopProductsReport();
 
@@ -576,7 +576,7 @@ export async function topProductsReport(): Promise<FetchResponse> {
 }
 export async function lowInStockReport(
   quantity: number
-): Promise<FetchResponse> {
+): Promise<ReportsFetchResponse> {
   try {
     const res = await getLowInStockReport({ quantity: quantity });
 
@@ -594,7 +594,7 @@ export async function lowInStockReport(
     };
   }
 }
-export async function wishlistsTrendsReport(): Promise<FetchResponse> {
+export async function wishlistsTrendsReport(): Promise<ReportsFetchResponse> {
   try {
     const res = await getWishlistsTrendsReport();
 
@@ -612,7 +612,7 @@ export async function wishlistsTrendsReport(): Promise<FetchResponse> {
     };
   }
 }
-export async function technicianRegistrationReport(): Promise<FetchResponse> {
+export async function technicianRegistrationReport(): Promise<ReportsFetchResponse> {
   try {
     const res = await getTechnicianRegistrationReport();
 

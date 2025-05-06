@@ -27,6 +27,12 @@ declare type ActionResponse = {
 type FetchResponse<T = unknown> = {
   success: boolean;
   message: string;
+  data?: T ;
+};
+
+type ReportsFetchResponse<T = unknown> = {
+  success: boolean;
+  message: string;
   data?: T | any;
 };
 
