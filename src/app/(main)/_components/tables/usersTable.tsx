@@ -11,6 +11,14 @@ import {
 } from "@/components/ui/select";
 import SmartPagination from "@/components/ui/smartPagination";
 import { useEffect, useState, memo } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 // Custom hook for debouncing
 function useDebounce<T>(value: T, delay?: number): T {
@@ -53,21 +61,21 @@ const UserRow = memo(
     };
 
     return (
-      <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-        <td className="p-4 align-middle">
+      <TableRow>
+        <TableCell>
           <Checkbox />
-        </td>
-        <td className="p-4 align-middle font-medium">
+        </TableCell>
+        <TableCell className="font-medium">
           {user.firstName} {user.lastName}
-        </td>
-        <td className="p-4 align-middle">{user.email}</td>
-        <td className="p-4 align-middle">{user.phoneNumber || "—"}</td>
-        <td className="p-4 align-middle">
+        </TableCell>
+        <TableCell>{user.email}</TableCell>
+        <TableCell>{user.phoneNumber || "—"}</TableCell>
+        <TableCell>
           <Badge className={getRoleBadgeColor(user.role.name)}>
             {user.role.name}
           </Badge>
-        </td>
-        <td className="p-4 align-middle flex gap-1 flex-wrap">
+        </TableCell>
+        <TableCell className="flex gap-1 flex-wrap">
           {user.isVerified ? (
             <Badge className="bg-green-100 text-green-800">Verified</Badge>
           ) : (
@@ -79,9 +87,9 @@ const UserRow = memo(
           {user.shopOwnerVerified && (
             <Badge className="bg-yellow-100 text-yellow-800">Shop</Badge>
           )}
-        </td>
-        <td className="p-4 align-middle">{formatDate(user.createdAt)}</td>
-        <td className="p-4 align-middle w-24">
+        </TableCell>
+        <TableCell>{formatDate(user.createdAt)}</TableCell>
+        <TableCell className="w-24">
           <button
             onClick={() => onEdit(user)}
             className="inline-flex items-center gap-1 text-blue-600 hover:underline text-sm"
@@ -89,8 +97,8 @@ const UserRow = memo(
             <Pencil className="w-4 h-4" />
             Edit
           </button>
-        </td>
-      </tr>
+        </TableCell>
+      </TableRow>
     );
   }
 );
@@ -158,54 +166,35 @@ export default function UserTable({
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-400"></div>
           </div>
         ) : (
-          <div className="w-full overflow-auto">
-            <table className="w-full caption-bottom text-sm">
-              <thead className="[&_tr]:border-b">
-                <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground w-12">
-                    <Checkbox />
-                  </th>
-                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                    Name
-                  </th>
-                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                    Email
-                  </th>
-                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                    Phone
-                  </th>
-                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                    Role
-                  </th>
-                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                    Status
-                  </th>
-                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                    Created
-                  </th>
-                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground w-24">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="[&_tr:last-child]:border-0">
-                {users.results.length === 0 ? (
-                  <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                    <td
-                      colSpan={8}
-                      className="p-4 align-middle h-24 text-center"
-                    >
-                      No users found.
-                    </td>
-                  </tr>
-                ) : (
-                  users.results.map((user) => (
-                    <UserRow key={user.id} user={user} onEdit={onEdit} />
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-12">
+                  <Checkbox />
+                </TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Phone</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Created</TableHead>
+                <TableHead className="w-24">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {users.results.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={8} className="h-24 text-center">
+                    No users found.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                users.results.map((user) => (
+                  <UserRow key={user.id} user={user} onEdit={onEdit} />
+                ))
+              )}
+            </TableBody>
+          </Table>
         )}
       </div>
 

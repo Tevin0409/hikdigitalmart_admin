@@ -86,11 +86,17 @@ export const navItems: NavItem[] = [
       },
 
       {
-        title: "User Logs",
-        url: "/dashboard/product/categories",
+        title: "Technicians",
+        url: "/dashboard/technician",
         icon: "product",
         shortcut: ["p", "p"],
       },
+      {
+        title: "Shop Owners",
+        url: "/dashboard/product/categories",
+        icon: "product",
+        shortcut: ["p", "p"],
+      }
       // {
       //   title: "Inventory & Subcategories",
       //   url: "/dashboard/product/categories",

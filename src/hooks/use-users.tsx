@@ -3,6 +3,7 @@
 import {
   createUserAction,
   getAllRolesAction,
+  getAllTechnicianQuestionnaires,
   getAllUsers,
   updateUserAction,
 } from "@/app/(main)/actions";
@@ -43,7 +44,6 @@ export const useUsersRoles = () => {
     retry: 2,
   });
 };
-
 export const useCreateUser = () => {
   const queryClient = useQueryClient();
 
@@ -55,7 +55,6 @@ export const useCreateUser = () => {
     retry: 2,
   });
 };
-
 export const useUpdateUser = () => {
   const queryClient = useQueryClient();
 
@@ -68,3 +67,26 @@ export const useUpdateUser = () => {
     retry: 2,
   });
 };
+export function useGetAllTechnicianQuestionnaires({
+  page = 1,
+  limit = 10,
+  searchTerm = "",
+  refreshTrigger = 0,
+}: {
+  page?: number;
+  limit?: number;
+  searchTerm?: string;
+  refreshTrigger?: number;
+}) {
+  return useQuery<UsersFetchResponse<unknown>, Error>({
+    queryKey: ["technician", { page, limit, searchTerm, refreshTrigger }],
+    queryFn: () =>
+      getAllTechnicianQuestionnaires({
+        page,
+        limit,
+        searchTerm,
+      }),
+    // keepPreviousData: true,
+    staleTime: 1000 * 60,
+  });
+}

@@ -11,7 +11,6 @@ import {
   useUsers,
   useUsersRoles,
 } from "@/hooks/use-users";
-import { NewProductModal2 } from "../../_components/newProduct";
 import UserTable from "../../_components/tables/usersTable";
 import { UserDialog } from "../../_components/tables/addUserDialog";
 import { toast } from "sonner";
@@ -20,7 +19,7 @@ const Users = () => {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRoleId, setSelectedRoleId] = useState("ALL"); // "ALL" by default
-  const limit = 10;
+  const limit = 20;
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [editUser, setEditUser] = useState<any | null>(null);
 
@@ -161,24 +160,23 @@ const Users = () => {
         </div>
         <Separator />
         <UserTable
-  users={usersData}
-  currentPage={page}
-  totalPages={usersData.totalPages}
-  onPageChange={setPage}
-  searchTerm={searchTerm}
-  onSearchTermChange={setSearchTerm}
-  roles={(roles?.data as Roles[]) ?? []}
-  selectedRoleId={selectedRoleId}
-  onRoleChange={(roleId) => {
-    setSelectedRoleId(roleId);
-    setPage(1);
-  }}
-  onEdit={(user) => {
-    setEditUser(user);
-    setIsDialogOpen(true);
-  }}
-/>
-
+          users={usersData}
+          currentPage={page}
+          totalPages={usersData.totalPages}
+          onPageChange={setPage}
+          searchTerm={searchTerm}
+          onSearchTermChange={setSearchTerm}
+          roles={(roles?.data as Roles[]) ?? []}
+          selectedRoleId={selectedRoleId}
+          onRoleChange={(roleId) => {
+            setSelectedRoleId(roleId);
+            setPage(1);
+          }}
+          onEdit={(user) => {
+            setEditUser(user);
+            setIsDialogOpen(true);
+          }}
+        />
       </div>
     </PageContainer>
   );

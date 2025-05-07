@@ -11,7 +11,7 @@ import {
 interface SmartPaginationProps {
   currentPage: number;
   totalPages: number;
-  onPageChange: (page: number) => void;
+  onPageChange: (page: number) => void ;
   delta?: number;
   showPageIndicator?: boolean;
   prevLabel?: string;

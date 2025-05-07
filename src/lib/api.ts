@@ -48,6 +48,20 @@ export const getAllUsersQuery = async (params: GetAllUsersParams = {}) => {
   return await API.get(`/admin/user/get-all-users?${query}`);
 };
 
+export const getTechnicianQuestionnaires = async (
+  params: { page?: number; limit?: number; searchTerm?: string } = {}
+) => {
+  const { page = 1, limit = 10, searchTerm } = params;
+
+  const query = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+    ...(searchTerm ? { searchTerm } : {}),
+  }).toString();
+
+  return await API.get(`/admin/user/technician-request?${query}`);
+};
+
 export const getAllRoles = async () => await API.get(`admin/role`);
 
 export const getUserByIdQuery = async (id: string) =>

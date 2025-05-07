@@ -31,6 +31,7 @@ import {
   getTechnicianRegistrationReport,
   getAllRoles,
   registerMutation,
+  getTechnicianQuestionnaires,
 } from "@/lib/api";
 import { revalidatePath } from "next/cache";
 import { ProductFormSchema, ProductPayload } from "./_components/newProduct";
@@ -475,6 +476,37 @@ export async function getAllUsers({
     return {
       success: false,
       message: "Failed to fetch users",
+      data: null,
+    };
+  }
+}
+
+export async function getAllTechnicianQuestionnaires({
+  page = 1,
+  limit = 10,
+  searchTerm,
+}: {
+  page: number;
+  limit: number;
+  searchTerm?: string;
+}): Promise<UsersFetchResponse> {
+  try {
+    const res = await getTechnicianQuestionnaires({
+      page,
+      limit,
+      searchTerm,
+    });
+
+    return {
+      success: true,
+      message: "Technicians fetched successfully",
+      data: res.data,
+    };
+  } catch (error) {
+    console.error("Error fetching technicians:", error);
+    return {
+      success: false,
+      message: "Failed to fetch technicians",
       data: null,
     };
   }

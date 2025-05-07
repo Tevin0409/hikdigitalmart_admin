@@ -27,7 +27,7 @@ declare type ActionResponse = {
 type FetchResponse<T = unknown> = {
   success: boolean;
   message: string;
-  data?: T ;
+  data?: T;
 };
 
 type ReportsFetchResponse<T = unknown> = {
@@ -311,6 +311,14 @@ declare type PaginatedUsers = {
   results: User[];
 };
 
+declare type PaginatedTechnician = {
+  page: number;
+  limit: number;
+  totalPages: number;
+  totalResults: number;
+  results: TechnicianQuestionnaire[];
+};
+
 declare type Roles = {
   id: string;
   name: string;
@@ -335,7 +343,7 @@ declare type User = {
   shopOwnerVerified: boolean;
   createdAt: string;
   updatedAt: string;
-  roleId?:string
+  roleId?: string;
   role: Role;
   permissions: any[];
 };
@@ -358,4 +366,34 @@ declare type UserTableProps = {
   onRoleChange: (roleId: string) => void;
   isLoading?: boolean;
   onEdit: (user: User) => void;
+};
+
+declare type TechnicianQuestionnaire = {
+  id: number;
+  businessName: string;
+  phoneNumber: string;
+  email: string;
+  location: string;
+  businessType: string;
+  experienceYears: number | null;
+  experienceAreas: string[];
+  brandsWorkedWith: string[];
+  integrationExperience: string;
+  familiarWithStandard: string | null;
+  purchaseSource: string[];
+  purchaseHikvision: string;
+  requiresTraining: string;
+  createdAt: string;
+  updatedAt: string;
+  user: User;
+};
+
+declare type TechnicianTableProps = {
+  data: PaginatedTechnician;
+  currentPage?: number;
+  onPageChange: (page: number) => void;
+  searchTerm?: string;
+  onSearchTermChange?: (term: string) => void;
+  onApprove: (id: number) => void;
+  isLoading?: boolean;
 };
