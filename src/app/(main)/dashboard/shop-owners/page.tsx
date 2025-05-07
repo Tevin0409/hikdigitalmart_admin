@@ -6,16 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { RefreshCw } from "lucide-react";
-import { useGetAllTechnicianQuestionnaires } from "@/hooks/use-users";
-import TechnicianTable from "../../_components/tables/techniciansTable";
+import { useGetAllShopOwnersQuestionnaires } from "@/hooks/use-users";
+import ShopOwnersTable from "../../_components/tables/shopOwnersTable";
 
-const Technician = () => {
+const ShopOwner = () => {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const limit = 10;
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  const { data, isLoading, error, refetch } = useGetAllTechnicianQuestionnaires(
+  const { data, isLoading, error, refetch } = useGetAllShopOwnersQuestionnaires(
     {
       page,
       limit,
@@ -74,8 +74,8 @@ const Technician = () => {
       <div className="flex flex-1 flex-col space-y-4">
         <div className="flex items-start justify-between">
           <Heading
-            title="Technicians"
-            description="Manage technician applications"
+            title="Shop Owners"
+            description="Manage Shop Owners applications"
           />
 
           <div className="flex items-center space-x-4">
@@ -87,7 +87,7 @@ const Technician = () => {
         </div>
         <Separator />
 
-        <TechnicianTable
+        <ShopOwnersTable
           data={technicianData}
           currentPage={page}
           onPageChange={setPage}
@@ -101,4 +101,4 @@ const Technician = () => {
   );
 };
 
-export default Technician;
+export default ShopOwner;

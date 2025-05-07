@@ -397,3 +397,39 @@ declare type TechnicianTableProps = {
   onApprove: (id: number) => void;
   isLoading?: boolean;
 };
+
+declare type ShopOwner = {
+  id: number;
+  companyName: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  phoneNumber2: string | null;
+  email: string;
+  email2: string | null;
+  address: string;
+  selectedBusinessType: string;
+  selectedBrands: string[];
+  selectedSecurityBrands: string[];
+  otherBrand: string;
+  selectedCategories: string[];
+  hikvisionChallenges: string;
+  adviceToSecureDigital: string;
+  createdAt: string;
+  updatedAt: string;
+  user?: User;
+};
+
+declare type ShopOwnersTableProps = {
+  data: {
+    results: ShopOwner[];
+    totalResults: number;
+    totalPages: number;
+  };
+  currentPage?: number;
+  onPageChange: (page: number) => void;
+  searchTerm?: string;
+  onSearchTermChange?: (term: string) => void;
+  onApprove?: (id: number) => void;
+  isLoading?: boolean;
+};

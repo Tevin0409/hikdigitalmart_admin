@@ -3,6 +3,7 @@
 import {
   createUserAction,
   getAllRolesAction,
+  getAllShopOwnerQuestionnaires,
   getAllTechnicianQuestionnaires,
   getAllUsers,
   updateUserAction,
@@ -82,6 +83,29 @@ export function useGetAllTechnicianQuestionnaires({
     queryKey: ["technician", { page, limit, searchTerm, refreshTrigger }],
     queryFn: () =>
       getAllTechnicianQuestionnaires({
+        page,
+        limit,
+        searchTerm,
+      }),
+    // keepPreviousData: true,
+    staleTime: 1000 * 60,
+  });
+}
+export function useGetAllShopOwnersQuestionnaires({
+  page = 1,
+  limit = 10,
+  searchTerm = "",
+  refreshTrigger = 0,
+}: {
+  page?: number;
+  limit?: number;
+  searchTerm?: string;
+  refreshTrigger?: number;
+}) {
+  return useQuery<UsersFetchResponse<unknown>, Error>({
+    queryKey: ["shopOwners", { page, limit, searchTerm, refreshTrigger }],
+    queryFn: () =>
+      getAllShopOwnerQuestionnaires({
         page,
         limit,
         searchTerm,

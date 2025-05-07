@@ -93,7 +93,7 @@ export const navItems: NavItem[] = [
       },
       {
         title: "Shop Owners",
-        url: "/dashboard/product/categories",
+        url: "/dashboard/shop-owners",
         icon: "product",
         shortcut: ["p", "p"],
       }

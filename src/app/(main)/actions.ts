@@ -32,6 +32,7 @@ import {
   getAllRoles,
   registerMutation,
   getTechnicianQuestionnaires,
+  getShopOwnerQuestionnaires,
 } from "@/lib/api";
 import { revalidatePath } from "next/cache";
 import { ProductFormSchema, ProductPayload } from "./_components/newProduct";
@@ -507,6 +508,37 @@ export async function getAllTechnicianQuestionnaires({
     return {
       success: false,
       message: "Failed to fetch technicians",
+      data: null,
+    };
+  }
+}
+
+export async function getAllShopOwnerQuestionnaires({
+  page = 1,
+  limit = 10,
+  searchTerm,
+}: {
+  page: number;
+  limit: number;
+  searchTerm?: string;
+}): Promise<UsersFetchResponse> {
+  try {
+    const res = await getShopOwnerQuestionnaires({
+      page,
+      limit,
+      searchTerm,
+    });
+
+    return {
+      success: true,
+      message: "Shop owners fetched successfully",
+      data: res.data,
+    };
+  } catch (error) {
+    console.error("Error fetching shop owners:", error);
+    return {
+      success: false,
+      message: "Failed to fetch shop owners",
       data: null,
     };
   }
