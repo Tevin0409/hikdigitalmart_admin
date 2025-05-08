@@ -27,45 +27,42 @@ import UploadProductsDialog from "../../_components/bulkupload";
 import { useProducts } from "@/hooks/use-products";
 import ProductsTable from "../../_components/tables/productsDataTable";
 import VignettePurchaseDialog, { NewProductModal2 } from "../../_components/newProduct";
+import OrdersTable from "../../_components/tables/ordersTable";
 
 type pageProps = {
   searchParams: Promise<SearchParams>;
 };
-const Products = (props: pageProps) => {
+const Orders = (props: pageProps) => {
   const { data: products, isLoading, error } = useProducts();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  if (isLoading) return <p>Loading products...</p>;
-  if (error) return <p>Error fetching products</p>;
+  if (isLoading) return <p>Loading orders...</p>;
+  if (error) return <p>Error fetching orders</p>;
   return (
     <PageContainer scrollable={false}>
       <div className="flex flex-1 flex-col space-y-4">
         <div className="flex items-start justify-between">
-          <Heading title="Products" description="Manage products " />
+          <Heading title="Orders" description="Manage Orders " />
 
-          <div className="flex items-center space-x-4">
+          {/* <div className="flex items-center space-x-4">
             <Button variant="outline" onClick={() => setIsDialogOpen(true)}>
               <Plus className="mr-2 h-4 w-4" />
-              Add Product
+              New Order
             </Button>
-            {/* <VignettePurchaseDialog
-              open={isDialogOpen}
-              onClose={() => setIsDialogOpen(false)}
-            /> */}
             <NewProductModal2
               open={isDialogOpen}
               onClose={() => setIsDialogOpen(false)}
               // subCategories={[]}
             />
             <UploadProductsDialog />
-          </div>
+          </div> */}
         </div>
         <Separator />
 
-        <ProductsTable />
+        <OrdersTable />
       </div>
     </PageContainer>
   );
 };
 
-export default Products;
+export default Orders;

@@ -80,7 +80,7 @@ export default function AppSidebar() {
       </SidebarHeader>
       <SidebarContent className="overflow-x-hidden">
         <SidebarGroup>
-          <SidebarGroupLabel>Overview</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-white">Overview</SidebarGroupLabel>
           <SidebarMenu>
             {navItems.map((item) => {
               const Icon = item.icon ? Icons[item.icon] : Icons.logo;
@@ -91,11 +91,12 @@ export default function AppSidebar() {
                   defaultOpen={item.isActive}
                   className="group/collapsible"
                 >
-                  <SidebarMenuItem>
+                  <SidebarMenuItem className="cursor-pointer transition-all ">
                     <CollapsibleTrigger asChild>
                       <SidebarMenuButton
                         tooltip={item.title}
                         isActive={pathname === item.url}
+                        className="text-white"
                       >
                         {item.icon && <Icon />}
                         <span>{item.title}</span>
@@ -106,10 +107,14 @@ export default function AppSidebar() {
                       <SidebarMenuSub>
                         {item.items?.map(
                           (subItem: { title: string; url: string }) => (
-                            <SidebarMenuSubItem key={subItem.title}>
+                            <SidebarMenuSubItem
+                              key={subItem.title}
+                              className=" cursor-pointer transition-all   "
+                            >
                               <SidebarMenuSubButton
                                 asChild
                                 isActive={pathname === subItem.url}
+                                className="text-white border-l-4 border-transparent  hover:border-[#0099cc] active:border-[#e03131] "
                               >
                                 <Link href={subItem.url}>
                                   <span>{subItem.title}</span>
@@ -123,11 +128,15 @@ export default function AppSidebar() {
                   </SidebarMenuItem>
                 </Collapsible>
               ) : (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem
+                  key={item.title}
+                  className="cursor-pointer transition-all border-l-4 border-transparent"
+                >
                   <SidebarMenuButton
                     asChild
                     tooltip={item.title}
                     isActive={pathname === item.url}
+                    className="text-white"
                   >
                     <Link href={item.url}>
                       <Icon />
@@ -160,12 +169,14 @@ export default function AppSidebar() {
                     </AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">
+                    <span className="truncate font-semibold text-white">
                       {user?.firstName} {user?.lastName}
                     </span>
-                    <span className="truncate text-xs">{user?.email}</span>
+                    <span className="truncate text-xs text-white">
+                      {user?.email}
+                    </span>
                   </div>
-                  <ChevronsUpDown className="ml-auto size-4" />
+                  <ChevronsUpDown className="ml-auto size-4 text-white" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent

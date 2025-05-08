@@ -46,6 +46,33 @@ export const navItems: NavItem[] = [
     ], // No child items
   },
   {
+    title: "Orders",
+    url: "#",
+    icon: "billing",
+    isActive: false,
+    items: [
+      {
+        title: "Manage Orders",
+        url: "/dashboard/order",
+        icon: "employee",
+        shortcut: ["p", "p"],
+      },
+
+      // {
+      //   title: "User Logs",
+      //   url: "/dashboard/product/categories",
+      //   icon: "product",
+      //   shortcut: ["p", "p"],
+      // },
+      // {
+      //   title: "Inventory & Subcategories",
+      //   url: "/dashboard/product/categories",
+      //   icon: "product",
+      //   shortcut: ["p", "p"],
+      // },
+    ], // No child items
+  },
+  {
     title: "Users",
     url: "#",
     icon: "employee",
@@ -53,23 +80,43 @@ export const navItems: NavItem[] = [
     items: [
       {
         title: "Manage Users",
-        url: "/dashboard/product",
+        url: "/dashboard/user",
         icon: "employee",
         shortcut: ["p", "p"],
       },
 
       {
-        title: "User Logs",
-        url: "/dashboard/product/categories",
+        title: "Technicians",
+        url: "/dashboard/technician",
         icon: "product",
         shortcut: ["p", "p"],
       },
+      {
+        title: "Shop Owners",
+        url: "/dashboard/shop-owners",
+        icon: "product",
+        shortcut: ["p", "p"],
+      }
       // {
       //   title: "Inventory & Subcategories",
       //   url: "/dashboard/product/categories",
       //   icon: "product",
       //   shortcut: ["p", "p"],
       // },
+    ], // No child items
+  },
+  {
+    title: "Reports",
+    url: "#",
+    icon: "post",
+    isActive: false,
+    items: [
+      {
+        title: "All Reports",
+        url: "/dashboard/report",
+        icon: "employee",
+        shortcut: ["p", "p"],
+      },
     ], // No child items
   },
 ];
