@@ -75,7 +75,8 @@ export default function UploadProductsDialog() {
 
   const handleDownloadSample = () => {
     const link = document.createElement("a");
-    link.href = "/sample-format.xlsx";
+    link.href =
+      "https://ujputcylhp.ufs.sh/f/jvPVlPOjcwEvNoZcVprsVy4padmcboelWwQuNOD7tUhHq9g2";
     link.download = "sample-format.xlsx";
     document.body.appendChild(link);
     link.click();
