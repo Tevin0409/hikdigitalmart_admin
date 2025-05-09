@@ -33,6 +33,8 @@ import {
   registerMutation,
   getTechnicianQuestionnaires,
   getShopOwnerQuestionnaires,
+  approveTechnicianMutation,
+  approveShopOwnersMutation,
 } from "@/lib/api";
 import { revalidatePath } from "next/cache";
 import { ProductFormSchema, ProductPayload } from "./_components/newProduct";
@@ -749,6 +751,41 @@ export async function updateUserAction(
     return {
       success: false,
       message: "Failed to update user",
+      data: null,
+    };
+  }
+}
+export async function approveTechnician (id:string):Promise<UsersFetchResponse>{
+  try {
+    const res = await approveTechnicianMutation(id);
+
+    return {
+      success: true,
+      message: "Technician approved successfully",
+      data: res.data,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Technician update failed",
+      data: null,
+    };
+  }
+}
+
+export async function approveShopOwners (id:string):Promise<UsersFetchResponse>{
+  try {
+    const res = await approveShopOwnersMutation(id);
+
+    return {
+      success: true,
+      message: "Shop Owner approved successfully",
+      data: res.data,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Shop Owner update failed",
       data: null,
     };
   }

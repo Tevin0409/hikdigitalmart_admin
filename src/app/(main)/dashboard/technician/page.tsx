@@ -8,12 +8,24 @@ import { Separator } from "@/components/ui/separator";
 import { RefreshCw } from "lucide-react";
 import { useGetAllTechnicianQuestionnaires } from "@/hooks/use-users";
 import TechnicianTable from "../../_components/tables/techniciansTable";
+import { approveTechnician } from "../../actions";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const Technician = () => {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const limit = 10;
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { data, isLoading, error, refetch } = useGetAllTechnicianQuestionnaires(
     {
@@ -29,7 +41,24 @@ const Technician = () => {
     refetch();
   };
 
-  const handleApprove = async (technicianId: number) => {};
+  const handleApproveClick = (userId: string) => {
+    setSelectedUserId(userId);
+    setIsDialogOpen(true);
+  };
+
+  const handleConfirmApprove = async () => {
+    if (!selectedUserId) return;
+    
+    setIsDialogOpen(false);
+    const { success, message } = await approveTechnician(selectedUserId);
+    if (success) {
+      toast.success("Technician approved successfully");
+      refetch();
+    } else {
+      toast.error(message);
+    }
+    setSelectedUserId(null);
+  };
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -93,9 +122,29 @@ const Technician = () => {
           onPageChange={setPage}
           searchTerm={searchTerm}
           onSearchTermChange={handleSearchTermChange}
-          onApprove={handleApprove}
+          onApprove={handleApproveClick}
           isLoading={isLoading}
         />
+
+        {/* Approval Confirmation Dialog */}
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Confirm Approval</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to approve this technician? This action cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleConfirmApprove}>
+                Approve
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </PageContainer>
   );

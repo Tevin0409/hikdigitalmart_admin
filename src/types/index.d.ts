@@ -39,7 +39,7 @@ type ReportsFetchResponse<T = unknown> = {
 type UsersFetchResponse<T = unknown> = {
   success: boolean;
   message: string;
-  data: PaginatedUsers | T | Roles[] | any;
+  data: PaginatedUsers | T | Roles[] | any | User | TechnicianQuestionnaire;
 };
 declare type AddressFormData = {
   streetAddress: string;
@@ -394,7 +394,7 @@ declare type TechnicianTableProps = {
   onPageChange: (page: number) => void;
   searchTerm?: string;
   onSearchTermChange?: (term: string) => void;
-  onApprove: (id: number) => void;
+  onApprove: (id: string) => void;
   isLoading?: boolean;
 };
 
@@ -430,6 +430,6 @@ declare type ShopOwnersTableProps = {
   onPageChange: (page: number) => void;
   searchTerm?: string;
   onSearchTermChange?: (term: string) => void;
-  onApprove?: (id: number) => void;
+  onApprove?: (id: string) => void;
   isLoading?: boolean;
 };

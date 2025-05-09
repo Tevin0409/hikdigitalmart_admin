@@ -62,9 +62,7 @@ const UserRow = memo(
 
     return (
       <TableRow>
-        <TableCell>
-          <Checkbox />
-        </TableCell>
+        <TableCell></TableCell>
         <TableCell className="font-medium">
           {user.firstName} {user.lastName}
         </TableCell>
@@ -141,10 +139,7 @@ export default function UserTable({
         </div>
 
         <div className="flex items-center gap-4">
-          <Select 
-            value={selectedRoleId || "ALL"} 
-            onValueChange={onRoleChange}
-          >
+          <Select value={selectedRoleId || "ALL"} onValueChange={onRoleChange}>
             <SelectTrigger className="w-[180px] rounded-lg bg-background">
               <SelectValue placeholder="Filter by role" />
             </SelectTrigger>
@@ -170,7 +165,6 @@ export default function UserTable({
             <TableHeader>
               <TableRow>
                 <TableHead className="w-12">
-                  <Checkbox />
                 </TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
@@ -200,8 +194,8 @@ export default function UserTable({
 
       <div className="flex items-center justify-between">
         <div className="text-sm text-muted-foreground">
-          {users.totalResults}{" "}
-          {users.totalResults === 1 ? "user" : "users"} total
+          {users.totalResults} {users.totalResults === 1 ? "user" : "users"}{" "}
+          total
         </div>
         {totalPages > 1 && (
           <SmartPagination

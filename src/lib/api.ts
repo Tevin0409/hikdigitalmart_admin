@@ -84,6 +84,11 @@ export const getUserByEmailQuery = async (email: string) =>
   await API.get(`/user/get-user-by-email/${email}`);
 export const updateUserMutation = async (id: string, data: object) =>
   await API.put(`/user/update-user/${id}`, data);
+export const approveTechnicianMutation = async (id: string) =>
+  await API.post(`/admin/user/approve-technician/${id}`);
+export const approveShopOwnersMutation = async (id: string) =>
+  await API.post(`/admin/user/approve-shopowner/${id}`);
+
 
 // SALES
 export const getAllSalesQuery = async (params: OrderQueryParams) =>

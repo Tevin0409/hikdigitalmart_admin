@@ -53,7 +53,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface ShopOwnerRowProps {
   shopOwner: ShopOwner;
-  onApprove: (id: number) => void;
+  onApprove: (id: string) => void;
   onViewDetails: (shopOwner: ShopOwner) => void;
 }
 
@@ -119,7 +119,7 @@ const ShopOwnerDetail = ({ shopOwner, onClose }: ShopOwnerDetailProps) => {
           </div>
         </div>
         <div>
-          { shopOwner.user &&  shopOwner.user.shopOwnerVerified ? (
+          {shopOwner.user && shopOwner.user.shopOwnerVerified ? (
             <Badge className="bg-green-100 text-green-800 px-3 py-1 text-sm flex items-center gap-1">
               <CheckCircle className="h-3 w-3" />
               Approved
@@ -205,7 +205,9 @@ const ShopOwnerDetail = ({ shopOwner, onClose }: ShopOwnerDetailProps) => {
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   Business Type
                 </div>
-                <p className="font-medium">{shopOwner.selectedBusinessType || "—"}</p>
+                <p className="font-medium">
+                  {shopOwner.selectedBusinessType || "—"}
+                </p>
               </div>
             </div>
           </div>
@@ -223,14 +225,17 @@ const ShopOwnerDetail = ({ shopOwner, onClose }: ShopOwnerDetailProps) => {
                   Selected Brands
                 </div>
                 <div className="flex flex-wrap gap-2 mt-1">
-                  {shopOwner.selectedBrands && shopOwner.selectedBrands.length > 0 ? (
+                  {shopOwner.selectedBrands &&
+                  shopOwner.selectedBrands.length > 0 ? (
                     shopOwner.selectedBrands.map((brand, index) => (
                       <Badge key={index} variant="secondary">
                         {brand}
                       </Badge>
                     ))
                   ) : (
-                    <span className="text-muted-foreground text-sm">None specified</span>
+                    <span className="text-muted-foreground text-sm">
+                      None specified
+                    </span>
                   )}
                 </div>
               </div>
@@ -239,14 +244,17 @@ const ShopOwnerDetail = ({ shopOwner, onClose }: ShopOwnerDetailProps) => {
                   Security Brands
                 </div>
                 <div className="flex flex-wrap gap-2 mt-1">
-                  {shopOwner.selectedSecurityBrands && shopOwner.selectedSecurityBrands.length > 0 ? (
+                  {shopOwner.selectedSecurityBrands &&
+                  shopOwner.selectedSecurityBrands.length > 0 ? (
                     shopOwner.selectedSecurityBrands.map((brand, index) => (
                       <Badge key={index} variant="secondary">
                         {brand}
                       </Badge>
                     ))
                   ) : (
-                    <span className="text-muted-foreground text-sm">None specified</span>
+                    <span className="text-muted-foreground text-sm">
+                      None specified
+                    </span>
                   )}
                 </div>
               </div>
@@ -261,14 +269,17 @@ const ShopOwnerDetail = ({ shopOwner, onClose }: ShopOwnerDetailProps) => {
                   Product Categories
                 </div>
                 <div className="flex flex-wrap gap-2 mt-1">
-                  {shopOwner.selectedCategories && shopOwner.selectedCategories.length > 0 ? (
+                  {shopOwner.selectedCategories &&
+                  shopOwner.selectedCategories.length > 0 ? (
                     shopOwner.selectedCategories.map((category, index) => (
                       <Badge key={index} variant="secondary">
                         {category}
                       </Badge>
                     ))
                   ) : (
-                    <span className="text-muted-foreground text-sm">None specified</span>
+                    <span className="text-muted-foreground text-sm">
+                      None specified
+                    </span>
                   )}
                 </div>
               </div>
@@ -287,13 +298,17 @@ const ShopOwnerDetail = ({ shopOwner, onClose }: ShopOwnerDetailProps) => {
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   Hikvision Challenges
                 </div>
-                <p className="font-medium">{shopOwner.hikvisionChallenges || "—"}</p>
+                <p className="font-medium">
+                  {shopOwner.hikvisionChallenges || "—"}
+                </p>
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   Advice to Secure Digital
                 </div>
-                <p className="font-medium">{shopOwner.adviceToSecureDigital || "—"}</p>
+                <p className="font-medium">
+                  {shopOwner.adviceToSecureDigital || "—"}
+                </p>
               </div>
             </div>
           </div>
@@ -313,7 +328,7 @@ const ShopOwnerDetail = ({ shopOwner, onClose }: ShopOwnerDetailProps) => {
                   Account Verified
                 </div>
                 <p className="font-medium">
-                  { shopOwner.user && shopOwner.user.isVerified ? "Yes" : "No"}
+                  {shopOwner.user && shopOwner.user.isVerified ? "Yes" : "No"}
                 </p>
               </div>
               <div className="space-y-1">
@@ -321,7 +336,9 @@ const ShopOwnerDetail = ({ shopOwner, onClose }: ShopOwnerDetailProps) => {
                   Technician Verified
                 </div>
                 <p className="font-medium">
-                  {shopOwner.user &&  shopOwner.user.technicianVerified ? "Yes" : "No"}
+                  {shopOwner.user && shopOwner.user.technicianVerified
+                    ? "Yes"
+                    : "No"}
                 </p>
               </div>
               <div className="space-y-1">
@@ -329,18 +346,14 @@ const ShopOwnerDetail = ({ shopOwner, onClose }: ShopOwnerDetailProps) => {
                   <Calendar className="h-4 w-4" />
                   Created
                 </div>
-                <p className="font-medium">
-                  {formatDate(shopOwner.createdAt)}
-                </p>
+                <p className="font-medium">{formatDate(shopOwner.createdAt)}</p>
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="h-4 w-4" />
                   Updated
                 </div>
-                <p className="font-medium">
-                  {formatDate(shopOwner.updatedAt)}
-                </p>
+                <p className="font-medium">{formatDate(shopOwner.updatedAt)}</p>
               </div>
             </div>
           </div>
@@ -372,7 +385,7 @@ const ShopOwnerRow = memo(
         onClick={() => onViewDetails(shopOwner)}
       >
         <TableCell className="w-12" onClick={(e) => e.stopPropagation()}>
-          <Checkbox />
+          {/* <Checkbox /> */}
         </TableCell>
         <TableCell className="font-medium">
           <div className="flex items-center gap-3">
@@ -396,9 +409,7 @@ const ShopOwnerRow = memo(
         <TableCell className="max-w-[150px] truncate">
           {shopOwner.address}
         </TableCell>
-        <TableCell>
-          {shopOwner.selectedBusinessType || "—"}
-        </TableCell>
+        <TableCell>{shopOwner.selectedBusinessType || "—"}</TableCell>
         <TableCell>
           <div className="flex gap-1 flex-wrap">
             {shopOwner.user && shopOwner.user.shopOwnerVerified ? (
@@ -433,7 +444,7 @@ const ShopOwnerRow = memo(
               <Button
                 onClick={(e) => {
                   e.stopPropagation();
-                  onApprove(shopOwner.id);
+                  onApprove(shopOwner?.user?.id ? shopOwner.user.id : "");
                 }}
                 className="h-8 w-8 p-0 bg-green-600 hover:bg-green-700"
                 size="sm"
@@ -461,7 +472,9 @@ const ShopOwnersTable = ({
 }: ShopOwnersTableProps) => {
   const [localSearchTerm, setLocalSearchTerm] = useState<string>(searchTerm);
   const debouncedSearchTerm = useDebounce<string>(localSearchTerm, 500);
-  const [selectedShopOwner, setSelectedShopOwner] = useState<ShopOwner | null>(null);
+  const [selectedShopOwner, setSelectedShopOwner] = useState<ShopOwner | null>(
+    null
+  );
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
 
@@ -476,7 +489,7 @@ const ShopOwnersTable = ({
     setIsDrawerOpen(true);
   };
 
-  const handleApprove = (id: number): void => {
+  const handleApprove = (id: string): void => {
     if (onApprove) {
       onApprove(id);
     }
@@ -536,9 +549,7 @@ const ShopOwnersTable = ({
           <Table>
             <TableHeader className="bg-muted/50">
               <TableRow>
-                <TableHead className="w-12">
-                  <Checkbox />
-                </TableHead>
+                <TableHead className="w-12">{/* <Checkbox /> */}</TableHead>
                 <TableHead>Shop Owner</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Phone</TableHead>
@@ -636,12 +647,17 @@ const ShopOwnersTable = ({
               >
                 Close
               </Button>
-              {selectedShopOwner && selectedShopOwner.user && 
+              {selectedShopOwner &&
+                selectedShopOwner.user &&
                 !selectedShopOwner.user.shopOwnerVerified && (
                   <Button
                     className="bg-green-600 hover:bg-green-700 text-white px-6"
                     onClick={() => {
-                      handleApprove(selectedShopOwner.id);
+                      handleApprove(
+                        selectedShopOwner?.user?.id
+                          ? selectedShopOwner.user.id
+                          : ""
+                      );
                       setIsDrawerOpen(false);
                     }}
                   >

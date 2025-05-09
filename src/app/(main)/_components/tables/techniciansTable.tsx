@@ -50,7 +50,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface TechnicianRowProps {
   technician: TechnicianQuestionnaire;
-  onApprove: (id: number) => void;
+  onApprove: (id: string) => void;
   onViewDetails: (technician: TechnicianQuestionnaire) => void;
 }
 
@@ -387,7 +387,7 @@ const TechnicianRow = memo(
         onClick={() => onViewDetails(technician)}
       >
         <TableCell className="w-12" onClick={(e) => e.stopPropagation()}>
-          <Checkbox />
+          {/* <Checkbox /> */}
         </TableCell>
         <TableCell className="font-medium">
           <div className="flex items-center gap-3">
@@ -451,7 +451,7 @@ const TechnicianRow = memo(
               <Button
                 onClick={(e) => {
                   e.stopPropagation();
-                  onApprove(technician.id);
+                  onApprove(technician.user.id);
                 }}
                 className="h-8 w-8 p-0 bg-green-600 hover:bg-green-700"
                 size="sm"
@@ -495,7 +495,7 @@ const TechnicianTable = ({
     setIsDrawerOpen(true);
   };
 
-  const handleApprove = (id: number): void => {
+  const handleApprove = (id: string): void => {
     if (onApprove) {
       onApprove(id);
     }
@@ -556,7 +556,7 @@ const TechnicianTable = ({
             <TableHeader className="bg-muted/50">
               <TableRow>
                 <TableHead className="w-12">
-                  <Checkbox />
+                  {/* <Checkbox /> */}
                 </TableHead>
                 <TableHead>Technician</TableHead>
                 <TableHead>Email</TableHead>
@@ -660,7 +660,7 @@ const TechnicianTable = ({
                   <Button
                     className="bg-green-600 hover:bg-green-700 text-white px-6"
                     onClick={() => {
-                      handleApprove(selectedTechnician.id);
+                      handleApprove(selectedTechnician.user.id);
                       setIsDrawerOpen(false);
                     }}
                   >
