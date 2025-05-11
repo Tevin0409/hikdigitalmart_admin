@@ -35,6 +35,8 @@ import {
   getShopOwnerQuestionnaires,
   approveTechnicianMutation,
   approveShopOwnersMutation,
+  getAllReviews,
+  respondReview,
 } from "@/lib/api";
 import { revalidatePath } from "next/cache";
 import { ProductFormSchema, ProductPayload } from "./_components/newProduct";
@@ -786,6 +788,56 @@ export async function approveShopOwners (id:string):Promise<UsersFetchResponse>{
     return {
       success: false,
       message: "Shop Owner update failed",
+      data: null,
+    };
+  }
+}
+
+export async function getAllReviewsAction({
+  page = 1,
+  limit = 10,
+  searchTerm,
+}: {
+  page: number;
+  limit: number;
+  searchTerm?: string;
+}): Promise<UsersFetchResponse> {
+  try {
+    const res = await getAllReviews({
+      page,
+      limit,
+      searchTerm,
+    });
+
+    return {
+      success: true,
+      message: "Reviews fetched successfully",
+      data: res.data,
+    };
+  } catch (error) {
+    console.error("Error fetching reviews owners:", error);
+    return {
+      success: false,
+      message: "Failed to fetch review owners",
+      data: null,
+    };
+  }
+}
+
+
+export async function RespondToReview (id:string,message:string):Promise<UsersFetchResponse>{
+  try {
+    const res = await respondReview(id,message);
+
+    return {
+      success: true,
+      message: "Responded successfully",
+      data: res.data,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Respond failed update failed",
       data: null,
     };
   }

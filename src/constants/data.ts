@@ -117,6 +117,12 @@ export const navItems: NavItem[] = [
         icon: "employee",
         shortcut: ["p", "p"],
       },
+      {
+        title: "Reviews",
+        url: "/dashboard/reviews",
+        icon: "employee",
+        shortcut: ["p", "p"],
+      },
     ], // No child items
   },
 ];

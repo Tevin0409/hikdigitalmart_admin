@@ -39,7 +39,14 @@ type ReportsFetchResponse<T = unknown> = {
 type UsersFetchResponse<T = unknown> = {
   success: boolean;
   message: string;
-  data: PaginatedUsers | T | Roles[] | any | User | TechnicianQuestionnaire;
+  data:
+    | PaginatedUsers
+    | T
+    | Roles[]
+    | any
+    | User
+    | TechnicianQuestionnaire
+    | Review[];
 };
 declare type AddressFormData = {
   streetAddress: string;
@@ -432,4 +439,48 @@ declare type ShopOwnersTableProps = {
   onSearchTermChange?: (term: string) => void;
   onApprove?: (id: string) => void;
   isLoading?: boolean;
+};
+
+declare type Review = {
+  id: string;
+  productModelId: string;
+  userId: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+  updatedAt: string;
+  user: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: {
+      name: string;
+    };
+  };
+  productModel: {
+    name: string;
+  };
+  images: {
+    id: string;
+    reviewId: string;
+    uploadUrl: string;
+    optimizeUrl: string;
+    isPrimary: boolean;
+  }[];
+  ReviewResponse: {
+    id: string;
+    reviewId: string;
+    userId: string;
+    message: string;
+    createdAt: string;
+    updatedAt: string;
+    user: {
+      firstName: string;
+      lastName: string;
+      email: string;
+      role: {
+        name: string;
+      };
+    };
+  } | null;
 };

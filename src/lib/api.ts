@@ -106,6 +106,19 @@ export const createProductMutation = async (data: object) =>
 export const bulkUploadProductsMutation = async (data: object) => {
   await API.post("/admin/product/upload-xslx", data);
 };
+export const getAllReviews = async (
+  params: { page?: number; limit?: number; searchTerm?: string } = {}
+) => {
+  const { page = 1, limit = 10, searchTerm } = params;
+
+  const query = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+    ...(searchTerm ? { searchTerm } : {}),
+  }).toString();
+
+  return await API.get(`/admin/product/reviews?${query}`);
+};
 export const uploadProductImagesMutation = async (data: object) =>
   await API.post("/admin/product/add-images", data);
 export const getProductByIdQuery = async (id: string) =>
@@ -122,6 +135,8 @@ export const setPrimaryImageMutation = async (data: object) =>
   await API.post("/product/set-primary-image", data);
 export const deleteImageMutation = async (id: string) =>
   await API.delete(`/product/remove-image/${id}`);
+export const respondReview = async (id: string,message:string) =>
+  await API.post(`admin/product/respond-review/${id}`,{message});
 
 // INVENTORY
 export const addModelInventoryMutation = async (data: object) =>
