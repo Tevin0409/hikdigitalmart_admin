@@ -100,7 +100,7 @@ const Users = () => {
     URL.revokeObjectURL(url);
   };
 
-  if (isLoading) return;
+  // if (isLoading) return;
   // return (
   //   <div className="min-h-screen flex items-center justify-center bg-gray-100">
   //     <div className="text-center">
@@ -109,7 +109,7 @@ const Users = () => {
   //     </div>
   //   </div>
   // );
-  if (error || !data?.data)
+  if (error)
     return <p>Error fetching Users or no data available</p>;
 
   const defaultUsersData: PaginatedUsers = {

@@ -83,9 +83,9 @@ const Reviews = () => {
     setPage(1);
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+//   if (isLoading) {
+//     return <div>Loading...</div>;
+//   }
 
   if (error) {
     return (

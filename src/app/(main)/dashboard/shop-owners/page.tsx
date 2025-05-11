@@ -70,9 +70,9 @@ const ShopOwner = () => {
     setPage(1); // Reset to first page when searching
   };
 
-  if (isLoading) {
-    return;
-  }
+  // if (isLoading) {
+  //   return;
+  // }
 
   if (error) {
     return (
