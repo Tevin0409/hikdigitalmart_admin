@@ -17,7 +17,7 @@ API.interceptors.request.use(
 
 // AUTH
 export const loginMutation = async (data: LoginData) =>
-  await API.post("/auth/login", data);
+  await API.post("/auth/admin/login", data);
 export const registerMutation = async (data: RegisterData) =>
   await API.post("/user/create-user", data);
 export const refreshAccessTokenMutation = async (data: RefreshData) =>
