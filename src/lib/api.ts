@@ -130,13 +130,13 @@ export const getAllSubcategoriesQuery = async () =>
   await API.get(`/admin/product/subcategories`);
 export const getAllOrdersQuery = async () => await API.get(`/product/orders`);
 export const bulkUploadProductImagesMutation = async (data: object) =>
-  await API.post("/product/product/add-images", data);
+  await API.post("/product/add-images", data);
 export const setPrimaryImageMutation = async (data: object) =>
   await API.post("/product/set-primary-image", data);
 export const deleteImageMutation = async (id: string) =>
   await API.delete(`/product/remove-image/${id}`);
-export const respondReview = async (id: string,message:string) =>
-  await API.post(`admin/product/respond-review/${id}`,{message});
+export const respondReview = async (id: string, message: string) =>
+  await API.post(`/admin/product/respond-review/${id}`, { message });
 
 // INVENTORY
 export const addModelInventoryMutation = async (data: object) =>
