@@ -34,18 +34,34 @@ jobs:
           username: ${{ secrets.DO_USER }}
           key: ${{ secrets.DO_SSH_PRIVATE_KEY }}
           script: |
+            # Load NVM and use Node.js v24
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm use 24
+
+            echo "Using Node: $(node -v)"
+            echo "Using NPM: $(npm -v)"
+
+            # Ensure pnpm is installed
+            if ! command -v pnpm &> /dev/null; then
+              echo "pnpm not found, installing..."
+              npm install -g pnpm
+            fi
+
+            # Ensure pm2 is installed
+            if ! command -v pm2 &> /dev/null; then
+              echo "pm2 not found, installing..."
+              npm install -g pm2
+            fi
+
             # Set project directory
             PROJECT_DIR="$HOME/admin"
-
-            # Ensure SSH agent is running
-            eval "$(ssh-agent -s)"
-            mkdir -p ~/.ssh
-            chmod 700 ~/.ssh
+            mkdir -p $PROJECT_DIR
 
             # Clone repository if it doesn’t exist, otherwise pull updates
             if [ ! -d "$PROJECT_DIR/.git" ]; then
               echo "Repository not found. Cloning..."
-              git clone git@github.com:Tevin0409/hikdigitalmart_admin.git $PROJECT_DIR
+              git clone https://github.com/Tevin0409/hikdigitalmart_admin.git $PROJECT_DIR
             else
               echo "Repository exists. Pulling latest changes..."
               cd $PROJECT_DIR
@@ -54,13 +70,6 @@ jobs:
 
             # Navigate to project directory
             cd $PROJECT_DIR
-
-            # Ensure pnpm is available on the server
-            if ! command -v pnpm &> /dev/null
-            then
-                echo "pnpm not found, installing..."
-                npm install -g pnpm
-            fi
 
             # Install dependencies using pnpm
             pnpm install --frozen-lockfile
