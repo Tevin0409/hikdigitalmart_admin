@@ -1,0 +1,23 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/(auth)/reset-password/page": "app/(auth)/reset-password/page.js",
+  "/(auth)/forgot-password/page": "app/(auth)/forgot-password/page.js",
+  "/(main)/dashboard/order/newOrder/page": "app/(main)/dashboard/order/newOrder/page.js",
+  "/(auth)/signup/page": "app/(auth)/signup/page.js",
+  "/(auth)/otp/page": "app/(auth)/otp/page.js",
+  "/(auth)/page": "app/(auth)/page.js",
+  "/(main)/dashboard/shop-owners/page": "app/(main)/dashboard/shop-owners/page.js",
+  "/(main)/dashboard/page": "app/(main)/dashboard/page.js",
+  "/(main)/dashboard/order/page": "app/(main)/dashboard/order/page.js",
+  "/(main)/dashboard/product/page": "app/(main)/dashboard/product/page.js",
+  "/(main)/dashboard/product/sub-categoriees/page": "app/(main)/dashboard/product/sub-categoriees/page.js",
+  "/(main)/dashboard/report/page": "app/(main)/dashboard/report/page.js",
+  "/(main)/dashboard/product/categories/page": "app/(main)/dashboard/product/categories/page.js",
+  "/(main)/dashboard/sales/orders/page": "app/(main)/dashboard/sales/orders/page.js",
+  "/(main)/dashboard/reviews/page": "app/(main)/dashboard/reviews/page.js",
+  "/(main)/dashboard/user/page": "app/(main)/dashboard/user/page.js",
+  "/(main)/dashboard/technician/page": "app/(main)/dashboard/technician/page.js",
+  "/(main)/dashboard/sales/page": "app/(main)/dashboard/sales/page.js",
+  "/(main)/dashboard/profile/page": "app/(main)/dashboard/profile/page.js"
+}
