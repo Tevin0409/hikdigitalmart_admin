@@ -19,13 +19,13 @@ jobs:
           node-version: 18
 
       - name: Install PNPM
-        run: npm i -g pnpm    
+        run: npm i -g pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build Next.js app
-        run: pnpm build
+      # - name: Build Next.js app
+      #   run: pnpm build
 
       - name: Deploy to DigitalOcean
         uses: appleboy/ssh-action@v0.1.10
@@ -75,7 +75,7 @@ jobs:
             pnpm install --frozen-lockfile
 
             # Build the Next.js app
-            pnpm build
+            # pnpm build
 
             # Restart the application using PM2 on port 5000
             pm2 restart hikdigitalmart_admin || pm2 start pnpm --name "hikdigitalmart_admin" -- start -- -p 5000
