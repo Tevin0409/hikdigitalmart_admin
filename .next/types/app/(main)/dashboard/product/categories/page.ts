@@ -1,4 +1,4 @@
-// File: /Users/tevinobai/Developer/Experiments/hikdigimart_admin/src/app/(main)/dashboard/product/categories/page.tsx
+// File: /Users/iannjoroge/dummy/hikdigitalmart_admin/src/app/(main)/dashboard/product/categories/page.tsx
 import * as entry from '../../../../../../../src/app/(main)/dashboard/product/categories/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

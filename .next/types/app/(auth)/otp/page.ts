@@ -1,4 +1,4 @@
-// File: /Users/tevinobai/Developer/Experiments/hikdigimart_admin/src/app/(auth)/otp/page.tsx
+// File: /Users/iannjoroge/dummy/hikdigitalmart_admin/src/app/(auth)/otp/page.tsx
 import * as entry from '../../../../../src/app/(auth)/otp/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
