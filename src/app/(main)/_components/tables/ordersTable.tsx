@@ -99,7 +99,7 @@ const OrdersTable = () => {
     const orders = flattenOrdersData(response?.data as OrdersData);
 
     const processedOrders = useMemo(() => {
-        let filtered = orders.filter((order) => {
+        const filtered = orders.filter((order) => {
             const term = searchTerm.toLowerCase();
             return (
                 order.first_name.toLowerCase().includes(term) ||

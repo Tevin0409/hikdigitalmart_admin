@@ -486,8 +486,8 @@ const ProductsTable = () => {
             <p><strong>Category:</strong> {selectedProduct?.category}</p>
             <p><strong>sub Category:</strong> {selectedProduct?.subCategory}</p>
             <p><strong>Description:</strong> {selectedProduct?.description}</p>
-            <p><strong>Price:</strong> KSH {(selectedProduct?.price! / 100).toFixed(2)}</p>
-            <p><strong>Status:</strong>{selectedProduct?.status!}</p>
+            <p><strong>Price:</strong> KSH {((selectedProduct?.price ?? 0) / 100).toFixed(2)}</p>
+            <p><strong>Status:</strong>{selectedProduct?.status ?? ""}</p>
             <p><strong>Is Featured:</strong> {selectedProduct?.isFeatured.toString()}</p>
             <p><strong>Inventory:</strong> {selectedProduct?.inventory}</p>
             {selectedProduct?.features && (
