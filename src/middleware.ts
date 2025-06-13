@@ -41,14 +41,15 @@ export async function middleware(req: NextRequest) {
         } = result.data as LoginResponse;
 
         const response = NextResponse.next();
+        const isProd = process.env.NODE_ENV === "production";
         response.cookies.set("access_token", accessToken, {
-          secure: true,
+          secure: isProd,
           sameSite: "strict",
           path: "/",
           expires: new Date(accessTokenExpiresAt),
         });
         response.cookies.set("refresh_token", refreshToken as string, {
-          secure: true,
+          secure: isProd,
           sameSite: "strict",
           path: "/",
           expires: new Date(refreshTokenExpiresAt),

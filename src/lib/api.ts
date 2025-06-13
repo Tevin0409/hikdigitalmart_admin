@@ -28,14 +28,15 @@ API.interceptors.response.use(
         if (refreshToken && id) {
           const refreshData = { id, refreshToken } as RefreshData;
           const res = await refreshAccessTokenMutation(refreshData);
+          const isProd = process.env.NODE_ENV === "production";
           cookieStore.set("access_token", res.data.accessToken as string, {
-            secure: true,
+            secure: isProd,
             sameSite: "strict",
             path: "/",
             expires: new Date(res.data.accessTokenExpiresAt),
           });
           cookieStore.set("refresh_token", res.data.refreshToken as string, {
-            secure: true,
+            secure: isProd,
             sameSite: "strict",
             path: "/",
             expires: new Date(res.data.refreshTokenExpiresAt),
