@@ -42,16 +42,28 @@ import {
 } from "lucide-react";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useTransition } from "react";
+import { logout } from "@/app/(auth)/actions";
 import * as React from "react";
 import { Icons } from "../icons";
 
 export default function AppSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const { open } = useSidebar();
   const stored_user = localStorage.getItem("user");
 
-  const user = JSON.parse(stored_user!);
+  const user = stored_user ? JSON.parse(stored_user) : null;
+
+  const handleLogout = () => {
+    startTransition(async () => {
+      await logout();
+      localStorage.removeItem("user");
+      router.push("/");
+    });
+  };
 
   return (
     <Sidebar collapsible="icon">
@@ -234,7 +246,7 @@ export default function AppSidebar() {
                   </DropdownMenuItem>
                 </DropdownMenuGroup> */}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout} disabled={isPending}>
                   <LogOut />
                   Log out
                 </DropdownMenuItem>

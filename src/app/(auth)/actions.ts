@@ -3,7 +3,7 @@ import { AxiosError } from "axios";
 import { cookies } from "next/headers";
 import { LoginFormSchema } from "@/app/_lib/definitions";
 import { loginMutation, refreshAccessTokenMutation } from "@/lib/api";
-import { createSession } from "@/lib/session";
+import { createSession, deleteSession } from "@/lib/session";
 
 export async function login(
   state: ActionResponse,
@@ -146,6 +146,34 @@ export async function refreshAccessToken(): Promise<ActionResponse> {
         password: "",
       },
       data: null,
+    };
+  }
+}
+
+export async function logout(): Promise<ActionResponse> {
+  try {
+    const cookieStore = await cookies();
+    cookieStore.delete("access_token");
+    cookieStore.delete("refresh_token");
+    cookieStore.delete("id");
+    await deleteSession();
+
+    return {
+      success: true,
+      message: "Logged out successfully",
+      inputs: {
+        email: "",
+        password: "",
+      },
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Failed to logout",
+      inputs: {
+        email: "",
+        password: "",
+      },
     };
   }
 }
