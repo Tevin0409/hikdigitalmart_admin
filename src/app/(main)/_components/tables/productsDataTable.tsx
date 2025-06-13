@@ -168,7 +168,10 @@ const ProductsTable = () => {
   };
 
   // Fetch products data
-  const { data: products, isLoading, error: isError } = useProducts();
+  const { data: products, isLoading, error: isError } = useProducts(
+    currentPage,
+    rowsPerPage
+  );
   const { data: subCategories, isLoading: SubCategoryLoading, error: subCategoriesError } = useFetchSubCategories();
   const { data: categories, isLoading: categoryLoading, error: categoriesError } = useFetchCategories();
 
@@ -204,12 +207,11 @@ const ProductsTable = () => {
 
   const productMeta = products?.data as FetchProductsResponse | undefined;
 
-  const page = productMeta?.page ?? 1;
+  const page = productMeta?.page ?? currentPage;
   const limit = productMeta?.limit ?? rowsPerPage;
   const totalPages = productMeta?.totalPages ?? 1;
 
-  const startIndex = (page - 1) * limit;
-  const paginatedData = sortedData.slice(startIndex, startIndex + limit);
+  const paginatedData = sortedData;
   // const paginatedData: FlattenProductsData[] | [] = [];
 
   // const requestSort = (key: string) => {
@@ -424,7 +426,6 @@ const ProductsTable = () => {
                 }
               />
             </PaginationItem>
-            {/* 
             {[...Array(totalPages)].map((_, index) => {
               const pageNumber = index + 1;
 
@@ -465,7 +466,7 @@ const ProductsTable = () => {
                     : "cursor-pointer"
                 }
               />
-            </PaginationItem> */}
+            </PaginationItem>
           </PaginationContent>
         </Pagination>
       </div>
