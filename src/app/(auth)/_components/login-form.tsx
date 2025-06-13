@@ -37,10 +37,12 @@ export function LoginForm() {
   useEffect(() => {
     if (state.success) {
       toast.success(state.message);
-      // store user data in local storage
-      localStorage.setItem("user", JSON.stringify(state.data));
-      setAccessToken((state.data as LoginResponse).accessToken);
-      // redirect to home page
+      const { user, accessToken } = state.data as {
+        user: LoginResponse["user"];
+        accessToken: string;
+      };
+      localStorage.setItem("user", JSON.stringify(user));
+      setAccessToken(accessToken);
       router.push("/dashboard");
     }
   }, [state.success, state.message, state]);

@@ -35,35 +35,25 @@ export async function login(
     } = loginResponse.data;
 
     const cookieStore = await cookies();
+    const isProd = process.env.NODE_ENV === "production";
     cookieStore.set("refresh_token", refreshToken as string, {
       httpOnly: true,
-      secure: true,
+      secure: isProd,
       sameSite: "strict",
       path: "/",
       expires: new Date(refreshTokenExpiresAt),
     });
     cookieStore.set("access_token", accessToken as string, {
       httpOnly: true,
-      secure: true,
+      secure: isProd,
       sameSite: "strict",
       path: "/",
       expires: new Date(accessTokenExpiresAt),
     });
-    const user = {
-      id: loginResponse.data.user.id,
-      email: loginResponse.data.user.email,
-      phoneNumber: loginResponse.data.user.phoneNumber,
-      firstName: loginResponse.data.user.firstName,
-      lastName: loginResponse.data.user.lastName,
-      isVerified: loginResponse.data.user.isVerified,
-      technicianVerified: loginResponse.data.user.technicianVerified,
-      roleId: loginResponse.data.user.roleId,
-      role: loginResponse.data.user.role,
-      accessToken,
-    };
+    const user = loginResponse.data.user;
     cookieStore.set("id", user.id as string, {
       httpOnly: true,
-      secure: true,
+      secure: isProd,
       sameSite: "strict",
       path: "/",
       expires: new Date(accessTokenExpiresAt),
@@ -75,7 +65,7 @@ export async function login(
       success: true,
       message: "Login successful!",
       inputs: rawData,
-      data: user,
+      data: { user, accessToken },
     };
   } catch (error) {
     console.log("Error submitting login:", error);
@@ -115,14 +105,15 @@ export async function refreshAccessToken(): Promise<ActionResponse> {
         refreshToken: refreshToken.value as string,
       };
       const response = await refreshAccessTokenMutation(refreshData);
+      const isProd = process.env.NODE_ENV === "production";
       cookieStore.set("access_token", response.data.accessToken as string, {
-        secure: true,
+        secure: isProd,
         sameSite: "strict",
         path: "/",
         expires: new Date(response.data.accessTokenExpiresAt),
       });
       cookieStore.set("refresh_token", response.data.refreshToken as string, {
-        secure: true,
+        secure: isProd,
         sameSite: "strict",
         path: "/",
         expires: new Date(response.data.refreshTokenExpiresAt),
