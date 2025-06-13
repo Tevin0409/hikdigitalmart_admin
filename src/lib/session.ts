@@ -20,7 +20,6 @@ export async function decrypt(session: string | undefined = "") {
     });
     return payload;
   } catch (error) {
-    console.log("Failed to verify session", error);
     return null;
   }
 }
@@ -40,8 +39,6 @@ export async function createSession(
 
   const session = await encrypt(payload);
   const cookieStore = await cookies();
-
-  console.log("Session:", session);
 
   const isProd = process.env.NODE_ENV === "production";
   cookieStore.set("session", session, {
