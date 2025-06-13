@@ -1,6 +1,9 @@
 "use client";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
+import { logout } from "@/app/(auth)/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,8 +16,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function UserNav() {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const stored_user = localStorage.getItem("user");
-  const user = JSON.parse(stored_user!);
+  const user = stored_user ? JSON.parse(stored_user) : null;
+
+  const handleLogout = () => {
+    startTransition(async () => {
+      await logout();
+      localStorage.removeItem("user");
+      router.push("/");
+    });
+  };
 
   return (
     <DropdownMenu>
@@ -57,10 +70,10 @@ export function UserNav() {
           <DropdownMenuItem>New Team</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        {/* <DropdownMenuItem onClick={() => signOut()}>
-            Log out
-            <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-          </DropdownMenuItem> */}
+        <DropdownMenuItem onClick={handleLogout} disabled={isPending}>
+          Log out
+          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

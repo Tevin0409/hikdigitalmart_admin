@@ -15,6 +15,42 @@ API.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+API.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        const cookieStore = await cookies();
+        const refreshToken = cookieStore.get("refresh_token")?.value;
+        const id = cookieStore.get("id")?.value;
+        if (refreshToken && id) {
+          const refreshData = { id, refreshToken } as RefreshData;
+          const res = await refreshAccessTokenMutation(refreshData);
+          cookieStore.set("access_token", res.data.accessToken as string, {
+            secure: true,
+            sameSite: "strict",
+            path: "/",
+            expires: new Date(res.data.accessTokenExpiresAt),
+          });
+          cookieStore.set("refresh_token", res.data.refreshToken as string, {
+            secure: true,
+            sameSite: "strict",
+            path: "/",
+            expires: new Date(res.data.refreshTokenExpiresAt),
+          });
+          originalRequest.headers["Authorization"] = `Bearer ${res.data.accessToken}`;
+          return API(originalRequest);
+        }
+      } catch (refreshError) {
+        return Promise.reject(refreshError);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 // AUTH
 export const loginMutation = async (data: LoginData) =>
   await API.post("/auth/admin/login", data);
