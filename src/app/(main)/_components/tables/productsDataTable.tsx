@@ -202,9 +202,14 @@ const ProductsTable = () => {
     return 0;
   });
 
-  const totalPages = Math.ceil(sortedData.length / rowsPerPage);
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const paginatedData = sortedData.slice(startIndex, startIndex + rowsPerPage);
+  const productMeta = products?.data as FetchProductsResponse | undefined;
+
+  const page = productMeta?.page ?? 1;
+  const limit = productMeta?.limit ?? rowsPerPage;
+  const totalPages = productMeta?.totalPages ?? 1;
+
+  const startIndex = (page - 1) * limit;
+  const paginatedData = sortedData.slice(startIndex, startIndex + limit);
   // const paginatedData: FlattenProductsData[] | [] = [];
 
   // const requestSort = (key: string) => {
