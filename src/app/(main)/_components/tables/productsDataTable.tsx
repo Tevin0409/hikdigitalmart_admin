@@ -206,9 +206,11 @@ const ProductsTable = () => {
     return 0;
   });
 
-  const page = products?.data?.page ?? 1;
-  const limit = products?.data?.limit ?? rowsPerPage;
-  const totalPages = products?.data?.totalPages ?? 1;
+  const {
+    page = 1,
+    limit = rowsPerPage,
+    totalPages = 1,
+  } = (products?.data as FetchProductsResponse | undefined) || {};
   const startIndex = (page - 1) * limit;
   const paginatedData = sortedData;
   // const paginatedData: FlattenProductsData[] | [] = [];

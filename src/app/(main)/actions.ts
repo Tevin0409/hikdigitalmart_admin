@@ -265,7 +265,7 @@ export async function uploadProductImages(
 export async function getProducts(
   page = 1,
   limit = 10
-): Promise<FetchResponse> {
+): Promise<FetchResponse<FetchProductsResponse>> {
   try {
     const res = await getAllProductsQuery({
       page,
