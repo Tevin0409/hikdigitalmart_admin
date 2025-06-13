@@ -169,7 +169,10 @@ const ProductsTable = () => {
   };
 
   // Fetch products data
-  const { data: products, isLoading, error: isError } = useProducts();
+  const { data: products, isLoading, error: isError } = useProducts(
+    currentPage,
+    rowsPerPage
+  );
   const { data: subCategories, isLoading: SubCategoryLoading, error: subCategoriesError } = useFetchSubCategories();
   const { data: categories, isLoading: categoryLoading, error: categoriesError } = useFetchCategories();
 
@@ -203,9 +206,11 @@ const ProductsTable = () => {
     return 0;
   });
 
-  const totalPages = Math.ceil(sortedData.length / rowsPerPage);
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const paginatedData = sortedData.slice(startIndex, startIndex + rowsPerPage);
+  const page = products?.data?.page ?? 1;
+  const limit = products?.data?.limit ?? rowsPerPage;
+  const totalPages = products?.data?.totalPages ?? 1;
+  const startIndex = (page - 1) * limit;
+  const paginatedData = sortedData;
   // const paginatedData: FlattenProductsData[] | [] = [];
 
   // const requestSort = (key: string) => {
@@ -384,11 +389,10 @@ const ProductsTable = () => {
 
       <div className="flex items-center justify-between mt-4">
         <div className="flex items-center gap-2">
-          {/* <span className="text-sm text-gray-500">
-            Showing {Math.min(startIndex + 1, sortedData.length)} to{" "}
-            {Math.min(startIndex + rowsPerPage, sortedData.length)} of{" "}
-            {sortedData.length} entries
-          </span> */}
+          <span className="text-sm text-gray-500">
+            Showing {startIndex + 1} to {startIndex + paginatedData.length} of{' '}
+            {products?.data?.totalResults ?? paginatedData.length} entries
+          </span>
           <Select
             value={rowsPerPage.toString()}
             onValueChange={(value) => {
@@ -421,7 +425,6 @@ const ProductsTable = () => {
                 }
               />
             </PaginationItem>
-            {/* 
             {[...Array(totalPages)].map((_, index) => {
               const pageNumber = index + 1;
 
@@ -462,7 +465,7 @@ const ProductsTable = () => {
                     : "cursor-pointer"
                 }
               />
-            </PaginationItem> */}
+            </PaginationItem>
           </PaginationContent>
         </Pagination>
       </div>
