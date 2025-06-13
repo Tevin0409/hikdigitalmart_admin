@@ -282,7 +282,7 @@ export async function getProducts(
     return {
       success: false,
       message: "Failed to fetch products",
-      data: null,
+      // intentionally omit data to keep type expectations
     };
   }
 }
