@@ -16,7 +16,6 @@ export default function AuthProvider({
     async function refreshToken() {
       try {
         const token = await refreshAccessToken();
-        console.log("Token after refresh:", token);
         // setAccessToken(token);
       } catch {
         // setAccessToken(null);

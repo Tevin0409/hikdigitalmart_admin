@@ -68,7 +68,6 @@ export async function login(
       data: { user, accessToken },
     };
   } catch (error) {
-    console.log("Error submitting login:", error);
 
     const errorMessage =
       (error as AxiosError<{ error: { message: string } }>)?.response?.data

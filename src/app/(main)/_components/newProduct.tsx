@@ -50,7 +50,6 @@ export default function NewProductModal({
 
   const handleNextStep = () => {
     if (!startDate) return;
-    console.log("Proceeding to next step...");
   };
 
   return (

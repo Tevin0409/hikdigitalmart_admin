@@ -69,7 +69,6 @@ export function SubCategoryForm() {
           toast.error("Please select a category.");
           return;
         }
-        console.log("Submitting data:", Object.fromEntries(formData));
         return dispatch(formData);
       }}
       className={cn("flex flex-col gap-6")}

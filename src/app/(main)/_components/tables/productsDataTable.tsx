@@ -52,7 +52,6 @@ const flattenProductsData = (data: FetchProductsResponse) => {
   const flattenedData: FlattenProductsData[] = [];
 
   if (!data.results) return flattenedData;
-  console.log("products", data.results)
 
   data.results.forEach((product: ProductData) => {
     product.models.forEach((model) => {
@@ -257,7 +256,6 @@ const ProductsTable = () => {
     }));
   };
 
-  console.log("edit values", editValues)
 
 
   return (
