@@ -166,12 +166,10 @@ declare type Model = {
   inventory: Inventory;
   id?: string;
   productId?: string;
-  price: number;
   status: string;
   isFeatured: string;
   createdAt?: string;
   updatedAt?: string;
-  inventory?: Inventory;
 };
 
 declare type ProductData = {
